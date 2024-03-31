@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="login_view">
-      <el-card style="height: 510px;width: 500px; border-radius: 5%;">
+      <el-card style="height: 450px;width: 500px; border-radius: 5%;">
         <el-form :model="loginForm" class="login_form" style="border: solid 0px red;"
                  label-width="auto" label-position="right">
           <el-form-item prop="userAccount" label="账号">
             <el-input v-model="loginForm.userAccount" placeholder="请输入账号" />
-          </el-form-item>
-          <el-form-item prop="userName" label="姓名">
-            <el-input v-model="loginForm.userName" placeholder="请输入姓名" />
           </el-form-item>
           <el-form-item prop="userPassword" label="密码">
             <el-input v-model="loginForm.userPassword" type="password" placeholder="请输入密码" show-password />
           </el-form-item>
           <el-form-item prop="checkRePassword" label="确认密码">
             <el-input v-model="loginForm.checkRePassword" type="password" placeholder="请输入确认密码" show-password />
+          </el-form-item>
+          <el-form-item prop="userName" label="姓名">
+            <el-input v-model="loginForm.userName" placeholder="请输入姓名" />
           </el-form-item>
           <el-form-item prop="cardId" label="身份证号">
             <el-input v-model="loginForm.cardId" placeholder="请输入身份证号" />
@@ -28,22 +28,22 @@
               <el-radio value="teacher">教师</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item prop="department" label="院系">
-            <el-input v-model="loginForm.department" placeholder="请输入院系" />
-<!--            <el-select v-model="loginForm.department" placeholder="请选择">-->
-<!--              <el-option v-for="(myDItem,index) in myD" :key="index" :label="myDItem.label" :value="myDItem.label">-->
-<!--                {{ myDItem.value }}-->
-<!--              </el-option>-->
-<!--            </el-select>-->
-          </el-form-item>
-          <el-form-item prop="classes" label="班级">
-            <el-input v-model="loginForm.classes" placeholder="请输入班级" />
-<!--            <el-select v-model="loginForm.classes" placeholder="请选择" @click="selectClass">-->
-<!--              <el-option v-for="(myDItem,index) in myC" :key="index" :label="myDItem.label" :value="myDItem.label">-->
-<!--                {{ myDItem.value }}-->
-<!--              </el-option>-->
-<!--            </el-select>-->
-          </el-form-item>
+<!--          <el-form-item prop="department" label="院系">-->
+<!--            <el-input v-model="loginForm.department" placeholder="请输入院系" />-->
+<!--&lt;!&ndash;            <el-select v-model="loginForm.department" placeholder="请选择">&ndash;&gt;-->
+<!--&lt;!&ndash;              <el-option v-for="(myDItem,index) in myD" :key="index" :label="myDItem.label" :value="myDItem.label">&ndash;&gt;-->
+<!--&lt;!&ndash;                {{ myDItem.value }}&ndash;&gt;-->
+<!--&lt;!&ndash;              </el-option>&ndash;&gt;-->
+<!--&lt;!&ndash;            </el-select>&ndash;&gt;-->
+<!--          </el-form-item>-->
+<!--          <el-form-item prop="classes" label="班级">-->
+<!--            <el-input v-model="loginForm.classes" placeholder="请输入班级" />-->
+<!--&lt;!&ndash;            <el-select v-model="loginForm.classes" placeholder="请选择" @click="selectClass">&ndash;&gt;-->
+<!--&lt;!&ndash;              <el-option v-for="(myDItem,index) in myC" :key="index" :label="myDItem.label" :value="myDItem.label">&ndash;&gt;-->
+<!--&lt;!&ndash;                {{ myDItem.value }}&ndash;&gt;-->
+<!--&lt;!&ndash;              </el-option>&ndash;&gt;-->
+<!--&lt;!&ndash;            </el-select>&ndash;&gt;-->
+<!--          </el-form-item>-->
           <el-form-item>
             <el-space :size="10" style="margin: auto;">
               <el-button class="login" type="success" @click="handleRegister">注册</el-button>

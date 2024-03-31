@@ -162,8 +162,8 @@ export default {
      * @param row
      */
     const handleClick = (row: {}) => {
-      notice.noticeTitle = row.noticeTitle;
-      notice.noticeContent = row.noticeContent;
+      (notice as any).noticeTitle = (row as any).noticeTitle;
+      (notice as any).noticeContent = (row as any).noticeContent;
 
       // console.log(notice);
       // notice = row;

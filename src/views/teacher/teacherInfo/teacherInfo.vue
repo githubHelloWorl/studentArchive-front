@@ -13,39 +13,39 @@
       <div>
         <el-descriptions title="" direction="vertical" :column="3" border>
           <el-descriptions-item label="教师工号"
-          >{{ user.userAccount }}
+          >{{ user1.userAccount }}
           </el-descriptions-item>
           <el-descriptions-item label="姓名"
-          >{{ user.userName }}
+          >{{ user1.userName }}
           </el-descriptions-item>
           <el-descriptions-item label="手机号"
-          >{{ user.phone }}
+          >{{ user1.phone }}
           </el-descriptions-item>
           <el-descriptions-item label="身份证号"
-          >{{ user.cardId }}
+          >{{ user1.cardId }}
           </el-descriptions-item>
           <el-descriptions-item label="所属院系"
-          >{{ user.department }}
+          >{{ user1.department }}
           </el-descriptions-item>
-<!--          <el-descriptions-item label="专业"-->
-<!--          >{{ user.classes }}-->
-<!--          </el-descriptions-item>-->
+          <!--          <el-descriptions-item label="专业"-->
+          <!--          >{{ user.classes }}-->
+          <!--          </el-descriptions-item>-->
           <el-descriptions-item label="职务"
-          >{{ user.job }}
+          >{{ user1.job }}
           </el-descriptions-item>
           <el-descriptions-item label="职称"
-          >{{ user.duty }}
+          >{{ user1.duty }}
           </el-descriptions-item>
           <el-descriptions-item label="单位"
-          >{{ user.unity }}
+          >{{ user1.unity }}
           </el-descriptions-item>
           <el-descriptions-item label="角色"
-          ><span v-if="user.userRole === 'student'">学生</span>
+          ><span v-if="user1.userRole === 'student'">学生</span>
             <span v-else>教师</span>
           </el-descriptions-item>
-<!--          <el-descriptions-item label="备注">-->
-<!--            <el-tag size="small">无</el-tag>-->
-<!--          </el-descriptions-item>-->
+          <!--          <el-descriptions-item label="备注">-->
+          <!--            <el-tag size="small">无</el-tag>-->
+          <!--          </el-descriptions-item>-->
         </el-descriptions>
       </div>
     </el-card>
@@ -53,16 +53,16 @@
 
     <el-dialog v-model="dialogFormVisible" title="修改个人信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="user1">
+      <el-form :model="user1" label-width="auto">
         <el-form-item label="学号" prop="userAccount">
           {{ user1.userAccount }}
         </el-form-item>
         <el-form-item label="姓名" prop="userName">
           {{ user1.userName }}
         </el-form-item>
-<!--        <el-form-item label="班级" prop="classes">-->
-<!--          <el-input v-model="user1.classes" placeholder="请输入班级" size="default" />-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="班级" prop="classes">-->
+        <!--          <el-input v-model="user1.classes" placeholder="请输入班级" size="default" />-->
+        <!--        </el-form-item>-->
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="user1.phone" placeholder="请输入手机号" size="default" />
         </el-form-item>

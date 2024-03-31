@@ -3,8 +3,10 @@
     <div class="login_view">
       <el-card style="height: 280px;width: 400px; border-radius: 5%;">
         <template #header>
-          <div style="margin-right: 5px;margin-left: 75%;">
-<!--            <el-button type="text" @click="handlerNotice">查看通知</el-button>-->
+          <div style="margin: auto;">
+            <!--            <el-button type="text" @click="handlerNotice">查看通知</el-button>-->
+            <span><el-text type="primary"
+                           style="font-family: 隶书;font-size: 24px;text-align: center;">学生档案管理</el-text></span>
           </div>
         </template>
 
@@ -32,7 +34,13 @@
 
     <el-dialog v-model="dialogFormVisible" title="找回密码" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="passForm">
+      <el-form :model="passForm" label-width="auto">
+        <el-form-item label="学/工号" prop="cardId">
+          <el-input v-model="passForm.userAccount" placeholder="请输入学/工号" size="large" :width="100" />
+        </el-form-item>
+        <el-form-item label="姓名" prop="cardId">
+          <el-input v-model="passForm.userName" placeholder="请输入姓名" size="large" :width="100" />
+        </el-form-item>
         <el-form-item label="身份证号" prop="cardId">
           <el-input v-model="passForm.cardId" placeholder="请输入身份证号" size="large" :width="100" />
         </el-form-item>
@@ -75,6 +83,8 @@ const loginForm = ref({
   userPassword: ""
 });
 const passForm = ref({
+  userAccount: "",
+  userName: "",
   cardId: "",
   userPassword: "",
   checkRePassword: ""
@@ -192,17 +202,18 @@ const toRegister = () => {
  * 忘记密码
  */
 const updatePass = () => {
-  const form = {
-    cardId: passForm.value.cardId,
-    userPassword: passForm.value.userPassword,
-    checkRePassword: passForm.value.checkRePassword
-  };
+  // const form = {
+  //
+  //   cardId: passForm.value.cardId,
+  //   userPassword: passForm.value.userPassword,
+  //   checkRePassword: passForm.value.checkRePassword
+  // };
 
   context?.$myRequest({
     url: "/api/user/updatePass",
     method: "POST",
-    data: form
-  }).then(function(res) {
+    data: passForm.value
+  }).then(function(res: { data: { code: number; message: any; }; }) {
     if (res.data.code === 0) {
       context?.$message({ type: "success", message: "密码重置成功" });
     } else {

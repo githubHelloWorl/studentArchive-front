@@ -30,7 +30,6 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-
         </el-col>
         <!--        <el-col :span="4" class="gird">-->
         <!--          <span style="color: white;line-height: 64px;">当前角色:&nbsp;</span>-->
@@ -86,16 +85,16 @@ let passForm = ref(<{}>{
  */
 const updatePass = () => {
   const form = {
-    cardId: passForm.value.cardId,
-    userPassword: passForm.value.userPassword,
-    checkRePassword: passForm.value.checkRePassword
+    cardId: (passForm as any).value.cardId,
+    userPassword: (passForm as any).value.userPassword,
+    checkRePassword: (passForm as any).value.checkRePassword
   };
 
   context?.$myRequest({
     url: "/api/user/updatePass",
     method: "POST",
     data: form
-  }).then(function(res) {
+  }).then(function(res: { data: { code: number; message: any; }; }) {
     if (res.data.code === 0) {
       context?.$message({ type: "success", message: "密码重置成功" });
     } else {
@@ -112,7 +111,7 @@ const logout = () => {
   context?.$myRequest({
     url: "/api/user/logout",
     method: "GET"
-  }).then(function(res) {
+  }).then(function(res: { data: { code: number; message: any; }; }) {
     if (res.data.code === 0) {
     } else {
       context?.$message({ type: "error", message: res.data.message });

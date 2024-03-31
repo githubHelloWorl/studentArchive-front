@@ -23,7 +23,7 @@
         <el-table-column prop="address" label="居住地址" width="180" />
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="scope">
-            <el-button type="primary" @click="handleClick(scope.row)">修改
+            <el-button type="primary" @click="handleClick(scope.row)">查看
             </el-button>
             <!--            <el-tooltip-->
             <!--              class="box-item"-->
@@ -52,27 +52,29 @@
 
     <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"
                style="max-width: 600px;" >
-      <el-form :model="archive" label-position="right">
+      <el-form :model="archive" label-position="right" label-width="auto">
         <el-form-item label="性别" prop="sex">
-          <el-radio-group v-model="archive.sex">
-            <el-radio value="男">男</el-radio>
-            <el-radio value="女">女</el-radio>
-          </el-radio-group>
+          {{ archive.sex }}
+<!--          <el-radio-group v-model="archive.sex">-->
+<!--            <el-radio value="男">男</el-radio>-->
+<!--            <el-radio value="女">女</el-radio>-->
+<!--          </el-radio-group>-->
         </el-form-item>
         <el-form-item label="家庭地址" prop="address">
-          <el-input v-model="archive.address" placeholder="请输入家庭住址" size="large" :width="100" />
+          <el-input v-model="archive.address" placeholder="请输入家庭住址" size="large" :width="100" disabled/>
         </el-form-item>
         <el-form-item label="健康状况" prop="health">
-          <el-input v-model="archive.health" placeholder="请输入健康状况" size="large" :width="100" />
+          <el-input v-model="archive.health" placeholder="请输入健康状况" size="large" :width="100" disabled/>
         </el-form-item>
         <el-form-item label="生源地" prop="origin">
-          <el-input v-model="archive.origin" placeholder="请输入生源地" size="large" />
+          <el-input v-model="archive.origin" placeholder="请输入生源地" size="large" disabled/>
         </el-form-item>
         <el-form-item label="民族" prop="nation">
-          <el-input v-model="archive.nation" placeholder="请输入民族" size="large" />
+          <el-input v-model="archive.nation" placeholder="请输入民族" size="large" disabled/>
         </el-form-item>
         <el-form-item label="出生日期" prop="createTime">
           <el-date-picker
+            disabled
             v-model="archive.createTime"
             type="date"
             placeholder="请输入日期"
@@ -83,9 +85,9 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="updateArchive">
-            修改
-          </el-button>
+<!--          <el-button type="primary" @click="updateArchive">-->
+<!--            修改-->
+<!--          </el-button>-->
         </div>
       </template>
     </el-dialog>

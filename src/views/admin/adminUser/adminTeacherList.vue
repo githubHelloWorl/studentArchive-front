@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card class="box-card all">
-      <el-table :data="tableData" border stripe style="width: 100%;" :key="tableKey">
+      <el-table :data="tableData" border stripe style="width: 100%;" >
         <el-table-column prop="userAccount" label="学号" width="120" />
         <el-table-column prop="userName" label="姓名" width="80" />
         <el-table-column prop="cardId" label="身份证号" width="180" />
@@ -15,6 +15,15 @@
           <template #default="scope">
             <el-button type="primary" @click="handleClick(scope.row)">修改
             </el-button>
+            <el-popconfirm
+              title="确定删除?"
+              @confirm="deleteUser(scope.row)"
+            >
+              <template #reference>
+                <el-button type="danger" style="width: 80px;">删除教师
+                </el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
@@ -30,32 +39,32 @@
     </el-card>
 
 
-<!--    <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"-->
-<!--               style="max-width: 600px;">-->
-<!--      <el-form :model="teacher" :inline="true">-->
-<!--        <el-form-item label="学号" prop="archiveId">-->
-<!--          <el-input v-model="teacher.userAccount" size="large" :width="100" disabled />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="密码" prop="address">-->
-<!--          <el-input v-model="teacher.userPassword" placeholder="请输入密码" size="large" :width="100" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="确认密码" prop="health">-->
-<!--          <el-input v-model="teacher.checkRePassword" placeholder="请输入确认密码" size="large" :width="100" />-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-<!--      <template #footer>-->
-<!--        <div class="dialog-footer">-->
-<!--          <el-button @click="dialogFormVisible = false">取消</el-button>-->
-<!--          <el-button type="primary" @click="updatePass">-->
-<!--            确认-->
-<!--          </el-button>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--    </el-dialog>-->
+    <!--    <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"-->
+    <!--               style="max-width: 600px;">-->
+    <!--      <el-form :model="teacher" :inline="true">-->
+    <!--        <el-form-item label="学号" prop="archiveId">-->
+    <!--          <el-input v-model="teacher.userAccount" size="large" :width="100" disabled />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="密码" prop="address">-->
+    <!--          <el-input v-model="teacher.userPassword" placeholder="请输入密码" size="large" :width="100" />-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="确认密码" prop="health">-->
+    <!--          <el-input v-model="teacher.checkRePassword" placeholder="请输入确认密码" size="large" :width="100" />-->
+    <!--        </el-form-item>-->
+    <!--      </el-form>-->
+    <!--      <template #footer>-->
+    <!--        <div class="dialog-footer">-->
+    <!--          <el-button @click="dialogFormVisible = false">取消</el-button>-->
+    <!--          <el-button type="primary" @click="updatePass">-->
+    <!--            确认-->
+    <!--          </el-button>-->
+    <!--        </div>-->
+    <!--      </template>-->
+    <!--    </el-dialog>-->
 
     <el-dialog v-model="dialogFormVisible" title="修改个人信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="user1">
+      <el-form :model="user1" label-width="auto">
         <el-form-item label="工号" prop="userAccount">
           {{ user1.userAccount }}
         </el-form-item>
@@ -65,9 +74,9 @@
         <el-form-item label="院系" prop="department">
           <el-input v-model="user1.department" placeholder="请输入院系" size="default" />
         </el-form-item>
-<!--        <el-form-item label="班级" prop="classes">-->
-<!--          <el-input v-model="user1.classes" placeholder="请输入班级" size="default" />-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="班级" prop="classes">-->
+        <!--          <el-input v-model="user1.classes" placeholder="请输入班级" size="default" />-->
+        <!--        </el-form-item>-->
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="user1.phone" placeholder="请输入手机号" size="default" />
         </el-form-item>
@@ -131,16 +140,37 @@ export default {
       tableData.value.push(...tmpList.value.slice(start, ans));
     };
 
+    /**
+     * 删除学生
+     */
+    const deleteUser = (row: {}) => {
+      context?.$myRequest({
+        url: "/api/user/deleteUser",
+        method: "POST",
+        data: row
+      }).then(function(res: { data: { code: number; data: {}; message: String; }; }) {
+        if (res.data.code === 0) {
+          context?.$message({
+            type: "success",
+            message: "删除成功"
+          });
+
+          getTable();
+        } else {
+          context?.$message({
+            type: "error",
+            message: res.data.message
+          });
+        }
+        dialogFormVisible.value = false;
+      });
+    };
 
     /**
      * 监听
      * 得到学生信息
      */
-    watch(props.ruleForm, (newValue, oldValue) => {
-      if (props.ruleForm.flag === 0) {
-        return;
-      }
-
+    const getTable = () => {
       form.value = props.ruleForm;
 
       context?.$myRequest({
@@ -172,6 +202,15 @@ export default {
 
         props.ruleForm.flag = 0;
       });
+    };
+    watch(props.ruleForm, (newValue, oldValue) => {
+      if (props.ruleForm.flag === 0) {
+        return;
+      }
+
+      getTable();
+
+      props.ruleForm.flag = 0;
 
     }, { immediate: true, deep: true });
 
@@ -214,7 +253,7 @@ export default {
     };
 
     return {
-      tableData, handleClick, dialogFormVisible, teacher, updateUser, changePage, total, tmpList, pageSize,user1
+      tableData, handleClick, dialogFormVisible, teacher, updateUser, changePage, total, tmpList, pageSize, user1, deleteUser
     };
   }
 };

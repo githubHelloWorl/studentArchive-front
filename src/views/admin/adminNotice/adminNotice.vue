@@ -56,7 +56,8 @@ const context = getCurrentInstance()?.appContext.config.globalProperties;
 const user = context?.$store.state.loginUser;
 let ruleForm = ref({
   noticeTitle: "",
-  noticeTime: ""
+  noticeTime: "",
+  noticeContent: ""
 });
 let dialogFormVisible = ref(<boolean>false);
 let notice = ref(<{}>{
@@ -81,6 +82,7 @@ const createNotice = () => {
         type: "success",
         message: "通知创建成功"
       });
+      (ruleForm as any).value.noticeContent += "1";
     } else {
       context?.$message({
         type: "error",

@@ -71,7 +71,7 @@
 
     <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="archive">
+      <el-form :model="archive" label-width="auto">
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="archive.sex">
             <el-radio value="男">男</el-radio>
@@ -111,7 +111,7 @@
 
     <el-dialog v-model="dialogFormVisible1" title="修改个人信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="user1">
+      <el-form :model="user1" label-width="auto">
         <el-form-item label="学号" prop="userAccount">
           {{ user1.userAccount }}
         </el-form-item>

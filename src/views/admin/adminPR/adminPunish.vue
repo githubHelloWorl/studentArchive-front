@@ -6,10 +6,10 @@
           <el-input v-model="ruleForm.userAccount"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="classes">
-          <el-input v-model="ruleForm.classes" ></el-input>
+          <el-input v-model="ruleForm.classes"></el-input>
         </el-form-item>
         <el-form-item label="学年学期" prop="stime">
-          <el-input v-model="ruleForm.stime" ></el-input>
+          <el-input v-model="ruleForm.stime"></el-input>
         </el-form-item>
       </el-form>
     </el-card>
@@ -19,10 +19,10 @@
       <el-table :data="tableData" border stripe style="width: 100%;">
         <!--          <el-table-column prop="id" ></el-table-column>-->
 
-        <el-table-column prop="fileId" label="处分编号" width="180" />
+        <el-table-column prop="fileId" label="处分编号" width="150" />
         <el-table-column prop="sid" label="学号" width="100" />
-        <el-table-column prop="userName" label="姓名" width="80" />
-        <el-table-column prop="stime" label="学期" width="80" />
+        <el-table-column prop="userName" label="姓名" width="120" />
+        <el-table-column prop="stime" label="学年学期" width="100" />
         <el-table-column prop="fileName" label="处分名称" width="100" />
         <el-table-column prop="department" label="院系" width="180" />
         <el-table-column prop="classes" label="班级" width="180" />
@@ -70,10 +70,10 @@
         <el-descriptions-item label="颁发时间">
           {{ new Date(file.fileTime).toLocaleDateString() }}
         </el-descriptions-item>
-        <!--        <el-descriptions-item label="审核时间">-->
-        <!--          <span v-if="file.checkTime !== null">{{ new Date(scope.row.checkTime).toLocaleDateString() }}</span>-->
-        <!--          <span v-else>...</span>-->
-        <!--        </el-descriptions-item>-->
+        <el-descriptions-item label="审核时间">
+          <span v-if="file.checkTime !== null">{{ new Date(file.checkTime).toLocaleDateString() }}</span>
+          <span v-else>...</span>
+        </el-descriptions-item>
         <el-descriptions-item label="学年学期">{{ file.stime }}</el-descriptions-item>
       </el-descriptions>
 

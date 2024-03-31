@@ -7,7 +7,7 @@
           label-position="left"
           :model="ruleForm"
           :inline="true"
-          style="width: 80%;margin-left: 10%;"
+          style="width: 100%;margin-left: 0%;"
           class="demo-form-inline">
           <el-form-item label="档案编号" prop="archiveId">
             <el-input v-model="ruleForm.archiveId" />

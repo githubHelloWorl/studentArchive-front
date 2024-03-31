@@ -29,18 +29,6 @@ const routes: Array<RouteRecordRaw> = [
           }
         ]
       },
-      // {
-      //   path: "/studentInfo",
-      //   name: "学生信息",
-      //   component: () => import("@/views/student/home.vue"),
-      //   children: [
-      //     {
-      //       path: "/studentInfo",
-      //       name: "学生信息",
-      //       component: () => import("@/views/student/studentInfo/studentInfo.vue")
-      //     }
-      //   ]
-      // },
       {
         path: "/studentAr",
         name: "学生-档案",
@@ -189,8 +177,8 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/admin/adminPR/adminPunish.vue")
           },
           {
-            path: "/teacherReward",
-            name: "奖励信息",
+            path: "/adminReward",
+            name: "获奖信息",
             component: () => import("@/views/admin/adminPR/adminReward.vue")
           }
         ]

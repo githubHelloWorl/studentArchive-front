@@ -8,11 +8,11 @@
         <el-table-column prop="userName" label="姓名" width="140" />
         <el-table-column prop="department" label="院系" width="180" />
         <el-table-column prop="classes" label="班级" width="180" />
-<!--        <el-table-column prop="sex" label="性别" width="80" />-->
-<!--        <el-table-column prop="health" label="健康状况" width="100" />-->
-<!--        <el-table-column prop="nation" label="民族" width="80" />-->
-<!--        <el-table-column prop="origin" label="生源地" width="180" />-->
-<!--        <el-table-column prop="address" label="居住地址" width="180" />-->
+        <!--        <el-table-column prop="sex" label="性别" width="80" />-->
+        <!--        <el-table-column prop="health" label="健康状况" width="100" />-->
+        <!--        <el-table-column prop="nation" label="民族" width="80" />-->
+        <!--        <el-table-column prop="origin" label="生源地" width="180" />-->
+        <!--        <el-table-column prop="address" label="居住地址" width="180" />-->
         <el-table-column label="操作" width="100" fixed="right">
           <template #default="scope">
             <el-button type="primary" @click="handleClick(scope.row)">查看
@@ -47,15 +47,15 @@
         <el-descriptions-item label="手机号">{{ archive.phone }}</el-descriptions-item>
         <el-descriptions-item label="身份证号">{{ archive.cardId }}</el-descriptions-item>
         <el-descriptions-item label="性别">
-          <el-select v-model="archive.sex" >
+          <el-select v-model="archive.sex">
             <el-option label="男" value="男">男</el-option>
             <el-option label="女" value="女">女</el-option>
           </el-select>
-<!--          <el-radio-group v-model="archive.sex">-->
-<!--            <el-radio value="男"></el-radio>-->
-<!--            <el-radio value="女"></el-radio>-->
-<!--          </el-radio-group>-->
-<!--          {{ archive.sex }}-->
+          <!--          <el-radio-group v-model="archive.sex">-->
+          <!--            <el-radio value="男"></el-radio>-->
+          <!--            <el-radio value="女"></el-radio>-->
+          <!--          </el-radio-group>-->
+          <!--          {{ archive.sex }}-->
         </el-descriptions-item>
         <el-descriptions-item label="院系">{{ archive.department }}</el-descriptions-item>
         <el-descriptions-item label="班级">{{ archive.classes }}</el-descriptions-item>
@@ -216,9 +216,9 @@ export default {
           res.data.data.forEach((item: {}, index: number) => {
             (item as any).tname = "";
             studentList.forEach((student: {}, index: number) => {
-              if (item.sid === student.userAccount) {
+              if ((item as any).sid === (student as any).userAccount) {
                 item = { ...item, ...student };
-                tempList.value.push(item);
+                (tempList as any).value.push(item);
               } else {
               }
             });

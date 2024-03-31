@@ -170,7 +170,7 @@ export default {
     };
 
     /**
-     * 修改档案
+     * 修改通知
      */
     const updateNotice = () => {
       context?.$myRequest({

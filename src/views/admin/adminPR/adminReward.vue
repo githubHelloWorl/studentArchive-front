@@ -27,7 +27,7 @@
         <el-table-column prop="fileId" label="证书编号" width="150" />
         <el-table-column prop="sid" label="学号" width="100" />
         <el-table-column prop="userName" label="姓名" width="90" />
-        <el-table-column prop="stime" label="学期" width="120" />
+        <el-table-column prop="stime" label="学年学期" width="120" />
         <!--          <el-table-column prop="id" ></el-table-column>-->
         <el-table-column prop="fileName" label="证书名称" width="120" />
         <el-table-column prop="fileUnit" label="颁发单位" width="240" />
@@ -82,7 +82,7 @@
         :size="'default'"
         border
       >
-        <el-descriptions-item label="证书编号" >{{ file.fileId }}</el-descriptions-item>
+        <el-descriptions-item label="证书编号">{{ file.fileId }}</el-descriptions-item>
         <el-descriptions-item label="学号">{{ file.sid }}</el-descriptions-item>
         <el-descriptions-item label="姓名">{{ file.userName }}</el-descriptions-item>
         <el-descriptions-item label="学年学期">{{ file.stime }}</el-descriptions-item>
@@ -96,7 +96,7 @@
           {{ new Date(file.fileTime).toLocaleDateString() }}
         </el-descriptions-item>
         <el-descriptions-item label="审核时间">
-          <span v-if="file.checkTime !== null">{{ new Date(scope.row.checkTime).toLocaleDateString() }}</span>
+          <span v-if="file.checkTime !== null">{{ new Date(file.checkTime).toLocaleDateString() }}</span>
           <span v-else>...</span>
         </el-descriptions-item>
       </el-descriptions>
@@ -136,7 +136,8 @@ let reward = ref(<{}>{
   state: "0",
   fileInfo: "1",
   tname: null,
-  fileUnt: null
+  fileUnt: null,
+  checkTime: ""
 });
 let tableData = ref(<[]>[]);
 let tmpList = ref(<[]>[]);
@@ -164,7 +165,7 @@ const changePage = (page: number) => {
  * 查看信息
  */
 const handlerReward = (row: any) => {
-  file.value = row;
+  file.value = { ...row };
   dialogFormVisible.value = true;
 };
 
@@ -172,7 +173,7 @@ const handlerReward = (row: any) => {
  * 证书
  */
 const handlerToReward = (state: String) => {
-  file.value.state = state;
+  (file as any).value.state = state;
 
   context?.$myRequest({
     url: "/api/PR/setFileState",
