@@ -96,7 +96,7 @@
         </el-descriptions-item>
         <el-descriptions-item label="审核教师">{{ file.tname }}</el-descriptions-item>
         <el-descriptions-item label="审核时间">
-          <span v-if="file.checkTime !== null">{{ new Date(scope.row.checkTime).toLocaleDateString() }}</span>
+          <span v-if="file.checkTime !== null">{{ new Date(file.checkTime).toLocaleDateString() }}</span>
           <span v-else>...</span>
         </el-descriptions-item>
 
@@ -148,7 +148,7 @@ let tmpList = ref(<[]>[]);
  * 查看信息
  */
 const handlerReward = (row: any) => {
-  file.value = row;
+  file.value = { ...row };
   dialogFormVisible.value = true;
 };
 
