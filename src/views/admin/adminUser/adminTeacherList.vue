@@ -184,8 +184,6 @@ export default {
           tmpList.value.splice(0);
           tmpList.value.push(...(res.data.data as []));
           total.value = res.data.data.length;
-          // console.log("total = ")
-          // console.log(total)
           let start = 0,
             end = pageSize.value;
           let length = tmpList.value.length;
