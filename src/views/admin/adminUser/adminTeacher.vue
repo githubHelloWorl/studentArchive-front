@@ -26,7 +26,7 @@
       </div>
     </el-card>
 
-    <admin-teacher-list :ruleForm="ruleForm"></admin-teacher-list>
+    <admin-teacher-list :ruleForm="ruleForm" :query="query"></admin-teacher-list>
   </div>
 </template>
 
@@ -46,8 +46,16 @@ let ruleForm = ref({
   classes: "",
   flag: 0
 });
+let query = ref({a:0});
 let dialogFormVisible = ref(false);
 let flag = ref({ a: 0 });
+
+/**
+ * 进行导出操作
+ */
+const changeQuery = () => {
+  query.value.a += 1;
+}
 
 /**
  * 修改档案

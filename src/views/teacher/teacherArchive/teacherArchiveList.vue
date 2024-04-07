@@ -1,18 +1,12 @@
 <template>
   <div>
     <el-card class="box-card all">
-      <el-table :data="tableData" border stripe style="width: 80%; margin-left: 10%;" :key="tableKey">
-        <!--          <el-table-column prop="id" ></el-table-column>-->
+      <el-table :data="tableData" border stripe style="width: 80%; margin-left: 10%;">
         <el-table-column prop="archiveId" label="档案编号" width="165" />
         <el-table-column prop="sid" label="学号" width="100" />
         <el-table-column prop="userName" label="姓名" width="140" />
         <el-table-column prop="department" label="院系" width="180" />
         <el-table-column prop="classes" label="班级" width="180" />
-        <!--        <el-table-column prop="sex" label="性别" width="80" />-->
-        <!--        <el-table-column prop="health" label="健康状况" width="100" />-->
-        <!--        <el-table-column prop="nation" label="民族" width="80" />-->
-        <!--        <el-table-column prop="origin" label="生源地" width="180" />-->
-        <!--        <el-table-column prop="address" label="居住地址" width="180" />-->
         <el-table-column label="操作" width="100" fixed="right">
           <template #default="scope">
             <el-button type="primary" @click="handleClick(scope.row)">查看
@@ -51,11 +45,6 @@
             <el-option label="男" value="男">男</el-option>
             <el-option label="女" value="女">女</el-option>
           </el-select>
-          <!--          <el-radio-group v-model="archive.sex">-->
-          <!--            <el-radio value="男"></el-radio>-->
-          <!--            <el-radio value="女"></el-radio>-->
-          <!--          </el-radio-group>-->
-          <!--          {{ archive.sex }}-->
         </el-descriptions-item>
         <el-descriptions-item label="院系">{{ archive.department }}</el-descriptions-item>
         <el-descriptions-item label="班级">{{ archive.classes }}</el-descriptions-item>
@@ -76,43 +65,20 @@
         <el-descriptions-item label="家庭住址">
           <el-input v-model="archive.address" placeholder="请输入家庭住址" size="default" />
         </el-descriptions-item>
-        <el-descriptions-item label="生源地">
+        <el-descriptions-item label="生源地" :span="3">
           <el-input v-model="archive.origin" placeholder="请输入生源地" size="default" />
         </el-descriptions-item>
-
+        <el-descriptions-item label="学生获奖信息" :span="3">
+          <el-text v-for="(reward,index) in studentPR.reward" :key="index" :label="reward" :value="reward">
+            {{ (index === 0 ? "" : " , ") + reward }}
+          </el-text>
+        </el-descriptions-item>
+        <el-descriptions-item label="学生处分信息" :span="3">
+          <el-text v-for="(punish,index) in studentPR.punish" :key="index" :label="punish" :value="punish">
+            {{ (index === 0 ? "" : " , ") + punish }}
+          </el-text>
+        </el-descriptions-item>
       </el-descriptions>
-
-      <!--      <el-form :model="archive" :inline="true">-->
-      <!--        <el-form-item label="档案编号" prop="archiveId">-->
-      <!--          <el-input v-model="archive.archiveId" size="large" :width="100" disabled />-->
-      <!--        </el-form-item>-->
-      <!--        <el-form-item label="性别" prop="sex">-->
-      <!--          <el-radio-group v-model="archive.sex">-->
-      <!--            <el-radio value="男">男</el-radio>-->
-      <!--            <el-radio value="女">女</el-radio>-->
-      <!--          </el-radio-group>-->
-      <!--        </el-form-item>-->
-      <!--        <el-form-item label="家庭地址" prop="address">-->
-      <!--          <el-input v-model="archive.address" placeholder="请输入家庭住址" size="large" :width="100" />-->
-      <!--        </el-form-item>-->
-      <!--        <el-form-item label="健康状况" prop="health">-->
-      <!--          <el-input v-model="archive.health" placeholder="请输入健康状况" size="large" :width="100" />-->
-      <!--        </el-form-item>-->
-      <!--        <el-form-item label="生源地" prop="origin">-->
-      <!--          <el-input v-model="archive.origin" placeholder="请输入生源地" size="large" />-->
-      <!--        </el-form-item>-->
-      <!--        <el-form-item label="民族" prop="nation">-->
-      <!--          <el-input v-model="archive.nation" placeholder="请输入民族" size="large" />-->
-      <!--        </el-form-item>-->
-      <!--        <el-form-item label="出生日期" prop="createTime">-->
-      <!--          <el-date-picker-->
-      <!--            v-model="archive.createTime"-->
-      <!--            type="date"-->
-      <!--            placeholder="请输入日期"-->
-      <!--            size="large"-->
-      <!--          />-->
-      <!--        </el-form-item>-->
-      <!--      </el-form>-->
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -132,6 +98,10 @@ import { ref, reactive, getCurrentInstance, onMounted, watch, toRef } from "vue"
 export default {
   props: ["ruleForm"],
   setup(props: any, content: any) {
+    interface PR {
+      punish: [string],
+      reward: [string]
+    };
 
     const context = getCurrentInstance()?.appContext.config.globalProperties;
     const user = context?.$store.state.loginUser;
@@ -145,6 +115,7 @@ export default {
     let pageSize = ref(10);
     let tableKey = ref(0);
     let tableData = ref(<[]>[]);
+    let studentPR = ref<PR>({ punish: [""], reward: [""] });
 
     /**
      * 改变页码
@@ -224,9 +195,6 @@ export default {
             });
           });
 
-          // console.log("tempList.value =");
-          // console.log(tempList.value);
-
           // 分页
           tmpList.value.splice(0);
           tmpList.value.push(...(tempList.value as []));
@@ -237,8 +205,6 @@ export default {
           let ans = end < length ? end : length;
           tableData.value.splice(0);
           tableData.value.push(...tmpList.value.slice(start, ans));
-          // console.log(tmpList.value);
-
         } else {
           context?.$message({
             type: "error",
@@ -254,6 +220,7 @@ export default {
 
     const handleClick = (row: {}) => {
       archive.value = row;
+      getPRByuserAccount((row as any).sid);
       dialogFormVisible.value = true;
       // console.log(archive.value);
     };
@@ -285,16 +252,38 @@ export default {
       });
     };
 
+    /**
+     * 得到用户PR
+     */
+    const getPRByuserAccount = (userAccount: string) => {
+      context?.$myRequest({
+        url: "/api/PR/getPRByuserAccount?userAccount=" + userAccount,
+        method: "GET"
+      }).then(function(res: { data: { code: number; data: []; message: String; }; }) {
+        if (res.data.code === 0) {
+          studentPR.value.reward.splice(0);
+          studentPR.value.punish.splice(0);
+          res.data.data.forEach((item: any, index) => {
+            if ((item as any).fileInfo === "1") {
+              studentPR.value.reward.push(item.fileName);
+            } else {
+              studentPR.value.punish.push(item.fileName);
+            }
+          });
+        } else {
+          context?.$message({
+            type: "error",
+            messag: res.data.message
+          });
+        }
+      });
+    };
+
     return {
-      tableData, tableKey, handleClick, dialogFormVisible, archive, updateArchive, total, pageSize, changePage
+      tableData, tableKey, handleClick, dialogFormVisible, archive, updateArchive, total, pageSize, changePage, studentPR
     };
   }
 };
-
-
-function ruleForm(ruleForm: any, arg1: {}, arg2: (newValue: any, oldValue: any) => void) {
-  throw new Error("Function not implemented.");
-}
 
 
 </script>

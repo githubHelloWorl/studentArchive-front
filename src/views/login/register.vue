@@ -28,22 +28,6 @@
               <el-radio value="teacher">教师</el-radio>
             </el-radio-group>
           </el-form-item>
-<!--          <el-form-item prop="department" label="院系">-->
-<!--            <el-input v-model="loginForm.department" placeholder="请输入院系" />-->
-<!--&lt;!&ndash;            <el-select v-model="loginForm.department" placeholder="请选择">&ndash;&gt;-->
-<!--&lt;!&ndash;              <el-option v-for="(myDItem,index) in myD" :key="index" :label="myDItem.label" :value="myDItem.label">&ndash;&gt;-->
-<!--&lt;!&ndash;                {{ myDItem.value }}&ndash;&gt;-->
-<!--&lt;!&ndash;              </el-option>&ndash;&gt;-->
-<!--&lt;!&ndash;            </el-select>&ndash;&gt;-->
-<!--          </el-form-item>-->
-<!--          <el-form-item prop="classes" label="班级">-->
-<!--            <el-input v-model="loginForm.classes" placeholder="请输入班级" />-->
-<!--&lt;!&ndash;            <el-select v-model="loginForm.classes" placeholder="请选择" @click="selectClass">&ndash;&gt;-->
-<!--&lt;!&ndash;              <el-option v-for="(myDItem,index) in myC" :key="index" :label="myDItem.label" :value="myDItem.label">&ndash;&gt;-->
-<!--&lt;!&ndash;                {{ myDItem.value }}&ndash;&gt;-->
-<!--&lt;!&ndash;              </el-option>&ndash;&gt;-->
-<!--&lt;!&ndash;            </el-select>&ndash;&gt;-->
-<!--          </el-form-item>-->
           <el-form-item>
             <el-space :size="10" style="margin: auto;">
               <el-button class="login" type="success" @click="handleRegister">注册</el-button>

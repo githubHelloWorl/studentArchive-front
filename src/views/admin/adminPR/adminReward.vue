@@ -76,7 +76,6 @@
     <el-dialog v-model="dialogFormVisible" title="证书信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-descriptions
-        :title="file.userName"
         direction="vertical"
         :column="3"
         :size="'default'"

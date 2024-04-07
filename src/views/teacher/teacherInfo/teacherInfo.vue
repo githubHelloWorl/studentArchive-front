@@ -13,7 +13,7 @@
       <div>
         <el-descriptions title="" direction="vertical" :column="3" border>
           <el-descriptions-item label="教师工号"
-          >{{ user1.userAccount }}
+          >{{ user.userAccount }}
           </el-descriptions-item>
           <el-descriptions-item label="姓名"
           >{{ user1.userName }}
@@ -43,40 +43,33 @@
           ><span v-if="user1.userRole === 'student'">学生</span>
             <span v-else>教师</span>
           </el-descriptions-item>
-          <!--          <el-descriptions-item label="备注">-->
-          <!--            <el-tag size="small">无</el-tag>-->
-          <!--          </el-descriptions-item>-->
         </el-descriptions>
       </div>
     </el-card>
 
-
     <el-dialog v-model="dialogFormVisible" title="修改个人信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="user1" label-width="auto">
+      <el-form :model="user2" label-width="auto">
         <el-form-item label="学号" prop="userAccount">
-          {{ user1.userAccount }}
+          {{ user2.userAccount }}
         </el-form-item>
         <el-form-item label="姓名" prop="userName">
-          {{ user1.userName }}
+          {{ user2.userName }}
         </el-form-item>
-        <!--        <el-form-item label="班级" prop="classes">-->
-        <!--          <el-input v-model="user1.classes" placeholder="请输入班级" size="default" />-->
-        <!--        </el-form-item>-->
         <el-form-item label="手机号" prop="phone">
-          <el-input v-model="user1.phone" placeholder="请输入手机号" size="default" />
+          <el-input v-model="user2.phone" placeholder="请输入手机号" size="default" />
         </el-form-item>
         <el-form-item label="院系" prop="department">
-          <el-input v-model="user1.department" placeholder="请输入院系" size="default" />
+          <el-input v-model="user2.department" placeholder="请输入院系" size="default" />
         </el-form-item>
         <el-form-item label="职务" prop="job">
-          <el-input v-model="user1.job" placeholder="请输入职务" size="default" />
+          <el-input v-model="user2.job" placeholder="请输入职务" size="default" />
         </el-form-item>
         <el-form-item label="职称" prop="duty">
-          <el-input v-model="user1.duty" placeholder="请输入职称" size="default" />
+          <el-input v-model="user2.duty" placeholder="请输入职称" size="default" />
         </el-form-item>
         <el-form-item label="单位" prop="unity">
-          <el-input v-model="user1.unity" placeholder="请输入单位" size="default" />
+          <el-input v-model="user2.unity" placeholder="请输入单位" size="default" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -92,11 +85,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, getCurrentInstance } from "vue";
+import { ref, reactive, getCurrentInstance, computed } from "vue";
+
+const instance = getCurrentInstance();
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 let user = JSON.parse(localStorage.getItem("loginUser") as string);
 let user1 = ref(<{}>{
+  userAccount: user.userAccount,
+  userName: user.userName,
+  userRole: user.userRole,
+  cardId: user.cardId,
+  phone: user.phone,
+  department: user.department,
+  classes: user.classes,
+  job: user.job,
+  duty: user.duty,
+  unity: user.unity
+});
+let user2 = ref(<{}>{
   userAccount: user.userAccount,
   userName: user.userName,
   userRole: user.userRole,
@@ -118,20 +125,17 @@ const updateUser = () => {
   context?.$myRequest({
     url: "/api/user/updateUser",
     method: "POST",
-    data: user1.value
+    data: user2.value
   }).then(function(res: { data: { code: number; data: {}; message: String; }; }) {
     if (res.data.code === 0) {
       context?.$message({
         type: "success",
-        message: "档案修改成功"
+        message: "修改成功"
       });
-      // const date = new Date(archive.value.createTime);
-      // console.log(date.toLocaleDateString());
       localStorage.setItem("loginUser", JSON.stringify(res.data.data));
-      user.value = res.data.data;
-      user1.value = res.data.data;
+      user2.value = { ...res.data.data };
+      user1.value = { ...user2.value };
 
-      // console.log(archive);
     } else {
       context?.$message({
         type: "error",
@@ -141,6 +145,7 @@ const updateUser = () => {
     dialogFormVisible.value = false;
   });
 };
+
 
 </script>
 

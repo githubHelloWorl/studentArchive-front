@@ -18,34 +18,23 @@
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <el-button type="danger" style="width: 110px;" @click="logout">退出</el-button>
-<!--                  <el-popconfirm-->
-<!--                    title="确定退出?"-->
-<!--                    @confirm="logout"-->
-<!--                  >-->
-<!--                    <template #reference>-->
-<!--                      -->
-<!--                    </template>-->
-<!--                  </el-popconfirm>-->
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </el-col>
-        <!--        <el-col :span="4" class="gird">-->
-        <!--          <span style="color: white;line-height: 64px;">当前角色:&nbsp;</span>-->
-        <!--          <el-text>{{ context?.$store.state.loginUser.userRole === "student" ? "学生" : "教师" }}</el-text>-->
-        <!--        </el-col>-->
       </el-row>
     </el-card>
 
     <el-dialog v-model="dialogFormVisible" title="找回密码" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="passForm" :inline="true">
-        <!--        <el-form-item label="身份证号" prop="cardId">-->
-        <!--          <el-input v-model="passForm.cardId" placeholder="请输入身份证号" size="large" :width="100" />-->
-        <!--        </el-form-item>-->
+      <el-form :model="passForm" label-width="auto">
+        <el-form-item label=" 原密码" prop="userPassword">
+          <el-input v-model="passForm.userPassword" placeholder="请输入原密码" size="large" type="password"
+                    show-password />
+        </el-form-item>
         <el-form-item label="  密码" prop="userPassword">
-          <el-input v-model="passForm.userPassword" placeholder="请输入密码" size="large" type="password"
+          <el-input v-model="passForm.newPassword" placeholder="请输入新密码" size="large" type="password"
                     show-password />
         </el-form-item>
         <el-form-item label="确认密码" prop="checkRePassword">
@@ -74,9 +63,10 @@ const user = JSON.parse(localStorage.getItem("loginUser") as string) || {};
 // console.log(user)
 
 let dialogFormVisible = ref(<boolean>false);
-let passForm = ref(<{}>{
-  cardId: user.cardId,
+let passForm = ref<{}>({
+  userAccount: user.userAccount,
   userPassword: "",
+  newPassword: "",
   checkRePassword: ""
 });
 
@@ -84,19 +74,20 @@ let passForm = ref(<{}>{
  * 忘记密码
  */
 const updatePass = () => {
-  const form = {
-    cardId: (passForm as any).value.cardId,
-    userPassword: (passForm as any).value.userPassword,
-    checkRePassword: (passForm as any).value.checkRePassword
-  };
+  // const form = {
+  //   cardId: (passForm as any).value.cardId,
+  //   userPassword: (passForm as any).value.userPassword,
+  //   checkRePassword: (passForm as any).value.checkRePassword
+  // };
 
   context?.$myRequest({
-    url: "/api/user/updatePass",
+    url: "/api/user/updatePassIn",
     method: "POST",
-    data: form
+    data: passForm.value
   }).then(function(res: { data: { code: number; message: any; }; }) {
     if (res.data.code === 0) {
       context?.$message({ type: "success", message: "密码重置成功" });
+      logout();
     } else {
       context?.$message({ type: "error", message: res.data.message });
     }

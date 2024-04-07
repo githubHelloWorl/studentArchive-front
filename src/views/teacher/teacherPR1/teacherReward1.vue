@@ -24,7 +24,6 @@
 
     <el-card>
       <el-table :data="tableData" border stripe style="width: 100%;">
-        <!--          <el-table-column prop="id" ></el-table-column>-->
         <el-table-column prop="fileId" label="证书编号" width="140" />
         <el-table-column prop="sid" label="学生学号" width="100" />
         <el-table-column prop="userName" label="学生姓名" width="90" />
@@ -72,6 +71,23 @@
       </el-pagination>
     </el-card>
 
+    <!-- 弹出框 -->
+    <el-dialog
+      title="pdf预览.pdf"
+      v-model="openPdf"
+      @close="onClose"
+      :close-on-click-modal="false"
+      width="1050px"
+    >
+      <!-- 预览pdf文件 -->
+      <embed
+        src=""
+        type="application/pdf"
+        width="1010px"
+        height="600px"
+      />
+    </el-dialog>
+
     <el-dialog v-model="dialogFormVisible" title="证书信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
 
@@ -95,17 +111,16 @@
           {{ new Date(file.submitTime).toLocaleDateString() }}
         </el-descriptions-item>
         <el-descriptions-item label="审核教师">{{ file.tname }}</el-descriptions-item>
-        <el-descriptions-item label="审核时间">
+        <el-descriptions-item label="审核时间">  <!-- TODO 4 文件审核时间  -->
           <span v-if="file.checkTime !== null">{{ new Date(file.checkTime).toLocaleDateString() }}</span>
           <span v-else>...</span>
         </el-descriptions-item>
-
       </el-descriptions>
 
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="handlerToReward('1')" :disabled="file.state === '2'">不通过</el-button>
-          <el-button type="primary" @click="handlerToReward('2')">
+          <el-button type="primary" @click="handlerToReward('2')" :disabled="file.state === '2'">
             通过
           </el-button>
         </div>
@@ -144,6 +159,16 @@ let teacherList = JSON.parse(localStorage.getItem("teacherList") as string);
 let total = ref(0);
 const pageSize = ref(10);
 let tmpList = ref(<[]>[]);
+
+
+// 是否打开弹窗
+const openPdf = ref(false);
+// 关闭弹窗
+const onClose = () => {
+  openPdf.value = false;
+};
+
+
 /**
  * 查看信息
  */
@@ -215,11 +240,7 @@ const getTable = () => {
         teacherList.forEach((teacher: {}, index: number) => {
           if (item.tid === teacher.userAccount) {
             item.tname = teacher.userName;
-            // console.log("teacher.tname = ");
-            // console.log(teacher.tname);
           } else {
-            // console.log("teacher.userAccount = ");
-            // console.log(teacher.userAccount);
           }
         });
       });

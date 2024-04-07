@@ -1,7 +1,27 @@
 <template>
   <div>
     <el-card class="box-card all">
-      <el-table :data="tableData" border stripe style="width: 100%;">
+      <el-pagination
+        style="margin-bottom: 20px;"
+        ref="myPage"
+        background
+        layout="sizes, prev, pager, next"
+        :total="total"
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10,20,50,100,1000,10000]"
+        @size-change="handleSizeChange"
+        @current-change="changePage"
+      >
+      </el-pagination>
+      <el-table
+        :data="tableData"
+        border
+        stripe style="width: 100%;"
+        @select="onSelect"
+        @select-all="selectAllChange"
+        @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="userAccount" label="学号" width="120" />
         <el-table-column prop="userName" label="姓名" width="80" />
         <el-table-column prop="cardId" label="身份证号" width="180" />
@@ -24,40 +44,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        style="margin-top: 20px;"
-        background
-        layout="prev, pager, next"
-        :total="total"
-        :page-size="pageSize"
-        @current-change="changePage"
-      >
-      </el-pagination>
     </el-card>
-
-    <!--    <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"-->
-    <!--               style="max-width: 600px;">-->
-    <!--      <el-form :model="student" :inline="true">-->
-    <!--        <el-form-item label="学号" prop="archiveId">-->
-    <!--          <el-input v-model="student.userAccount" size="large" :width="100" disabled />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="密码" prop="address">-->
-    <!--          <el-input v-model="student.userPassword" placeholder="请输入密码" size="large" :width="100" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="确认密码" prop="health">-->
-    <!--          <el-input v-model="student.checkRePassword" placeholder="请输入确认密码" size="large" :width="100" />-->
-    <!--        </el-form-item>-->
-    <!--      </el-form>-->
-    <!--      <template #footer>-->
-    <!--        <div class="dialog-footer">-->
-    <!--          <el-button @click="dialogFormVisible = false">取消</el-button>-->
-    <!--          <el-button type="primary" @click="updatePass">-->
-    <!--            确认-->
-    <!--          </el-button>-->
-    <!--        </div>-->
-    <!--      </template>-->
-    <!--    </el-dialog>-->
-
 
     <el-dialog v-model="dialogFormVisible" title="修改个人信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
@@ -87,23 +74,36 @@
         </div>
       </template>
     </el-dialog>
-
   </div>
 </template>
 
 <script lang="ts">
 import { ref, reactive, getCurrentInstance, onMounted, watch, toRef } from "vue";
-
+import { ListItem } from "element-plus";
+import * as XLSX from "xlsx";
+import moment from "moment/moment";
 
 export default {
-  props: ["ruleForm"],
+  props: ["ruleForm", "query"],
   setup(props: any, content: any) {
+    interface student {
+      userAccount: "",
+      userName: "",
+      cardId: "",
+      phone: "",
+      department: "",
+      classes: "",
+      archiveId: "",
+      sex: "",
+      address: "",
+      health: "",
+      origin: "",
+      nation: "",
+      createTime: ""
+    }
 
     const context = getCurrentInstance()?.appContext.config.globalProperties;
     const user = context?.$store.state.loginUser;
-    // let student = ref(<{}>{
-    //   checkRePassword: ""
-    // });
     let form = ref({});
     let dialogFormVisible = ref(false);
     let teacherList = JSON.parse(localStorage.getItem("teacherList") as string);
@@ -112,26 +112,38 @@ export default {
     let tmpList = ref(<[]>[]);
     let tableData = ref([]);
     let student = ref(<{}>{});
+    const studentInfoList = ref<student[]>([]);
+    let currentPage = ref<number>(1);
+    const { proxy }: any = getCurrentInstance();
 
     /**
      * 改变页码
      */
     const changePage = (page: number) => {
-      page = page - 1;
-      let start = page * pageSize.value,
-        end = pageSize.value * (page + 1);
-      let length = tmpList.value.length;
+      currentPage.value = page;
+      getTable();
+      // page = page - 1;
+      // let start = page * pageSize.value,
+      //   end = pageSize.value * (page + 1);
+      // let length = tmpList.value.length;
+      //
+      // let ans = end < length ? end : length;
+      // tableData.value.splice(0);
+      // tableData.value.push(...tmpList.value.slice(start, ans));
+    };
 
-      let ans = end < length ? end : length;
-      tableData.value.splice(0);
-      tableData.value.push(...tmpList.value.slice(start, ans));
+    /**
+     * 条码更改
+     */
+    const handleSizeChange = (val: number) => {
+      pageSize.value = val;
+      getTable();
     };
 
     /**
      * 删除学生
      */
     const deleteUser = (row: {}) => {
-      console.log(student.value);
       context?.$myRequest({
         url: "/api/user/deleteUser",
         method: "POST",
@@ -158,27 +170,35 @@ export default {
      *
      */
     const getTable = () => {
-      form.value = props.ruleForm;
+      form.value = {
+        pageNumber: currentPage.value,
+        pageSize: pageSize.value,
+        data: props.ruleForm
+      };
 
       context?.$myRequest({
-        url: "/api/user/queryUser",
+        url: "/api/user/queryUserArchive",
         method: "POST",
         data: form.value
-      }).then(function(res: { data: { code: number; data: []; message: String; }; }) {
+      }).then(function(res: { data: { code: number; data: { list: [], total: number }; message: String; }; }) {
         if (res.data.code === 0) {
 
-          // 分页
-          tmpList.value.splice(0);
-          tmpList.value.push(...(res.data.data as []));
-          total.value = res.data.data.length;
-          // console.log("total = ")
-          // console.log(total)
-          let start = 0,
-            end = pageSize.value;
-          let length = tmpList.value.length;
-          let ans = end < length ? end : length;
           tableData.value.splice(0);
-          tableData.value.push(...tmpList.value.slice(start, ans));
+          tableData.value.push(...(res.data.data.list as []));
+          total.value = res.data.data.total;
+
+          // 分页
+          // tmpList.value.splice(0);
+          // tmpList.value.push(...(res.data.data as []));
+          // total.value = res.data.data.length;
+          // // console.log("total = ")
+          // // console.log(total)
+          // let start = 0,
+          //   end = pageSize.value;
+          // let length = tmpList.value.length;
+          // let ans = end < length ? end : length;
+          // tableData.value.splice(0);
+          // tableData.value.push(...tmpList.value.slice(start, ans));
 
         } else {
           context?.$message({
@@ -203,11 +223,55 @@ export default {
     }, { immediate: true, deep: true });
 
     /**
+     * 监听 进行导出
+     */
+    watch(props.query, (newValue, oldValue) => {
+      if (studentInfoList.value.length === 0) {
+        context?.$message({ type: "warning", message: "您未选择任何数据" });
+        return;
+      }
+
+      const headers = ["学号", "姓名", "身份证号", "手机号码", "院系", "班级", "档案编号", "性别", "地址", "健康", "生源地", "民族", "出生年月"];
+      const data = studentInfoList.value.map(
+        item => [item.userAccount, item.userName, item.cardId,
+          item.phone, item.department, item.classes, item.archiveId,
+          item.sex, item.address, item.health, item.origin,
+          item.nation, item.createTime]);
+      const value = { userRole: "student", headers: headers, data: data };
+      context?.$store.dispatch("exportExcel", value);
+      // console.log(...data)
+      // const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+      // const workbook = XLSX.utils.book_new();
+      // XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+      // const moment = require("moment");
+      // const formattedTime = moment().format("YYYYMMDDHHmmss");
+      // XLSX.writeFile(workbook, formattedTime + ".xlsx");
+    }, { immediate: false, deep: true });
+
+    /**
+     * 监视选中的数据
+     * @param rows
+     * @param row
+     */
+    const onSelect = (rows: any, row: any) => {
+    };
+
+    const selectAllChange = (selection: any) => {
+      //处理数据
+      //。。。
+    };
+
+    const handleSelectionChange = (val: any) => {
+      (studentInfoList as any).value.splice(0);
+      (studentInfoList as any).value.push(...(val as []));
+      // 这里输出所有已选中的proxy列表
+    };
+
+    /**
      * 修改学生信息
      * @param row
      */
     const updateUser = () => {
-      console.log(student.value);
       context?.$myRequest({
         url: "/api/user/updateUser",
         method: "POST",
@@ -218,12 +282,10 @@ export default {
             type: "success",
             message: "档案修改成功"
           });
-          // const date = new Date(archive.value.createTime);
-          // console.log(date.toLocaleDateString());
           localStorage.setItem("loginUser", JSON.stringify(res.data.data));
           user.value = res.data.data;
 
-          // console.log(archive);
+          getTable();
         } else {
           context?.$message({
             type: "error",
@@ -239,9 +301,7 @@ export default {
      * @param row
      */
     const handleClick = (row: {}) => {
-      student.value = row;
-      // (student as any).value.userPassword = "";
-      // (student as any).value.checkRePassword = "";
+      student.value = { ...row };
       dialogFormVisible.value = true;
     };
 
@@ -271,7 +331,22 @@ export default {
     };
 
     return {
-      tableData, handleClick, dialogFormVisible, student, updatePass, changePage, total, tmpList, pageSize, updateUser, deleteUser
+      tableData,
+      handleClick,
+      dialogFormVisible,
+      student,
+      updatePass,
+      changePage,
+      handleSizeChange,
+      total,
+      tmpList,
+      pageSize,
+      currentPage,
+      updateUser,
+      deleteUser,
+      onSelect,
+      selectAllChange,
+      handleSelectionChange
     };
   }
 };

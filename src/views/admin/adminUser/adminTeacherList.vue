@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-card class="box-card all">
-      <el-table :data="tableData" border stripe style="width: 100%;" >
-        <el-table-column prop="userAccount" label="学号" width="120" />
+      <el-table :data="tableData" border stripe style="width: 100%;" @select="onSelect">
+<!--        <el-table-column type="selection" width="55" />-->
+        <el-table-column prop="userAccount" label="工号" width="120" />
         <el-table-column prop="userName" label="姓名" width="80" />
         <el-table-column prop="cardId" label="身份证号" width="180" />
         <el-table-column prop="phone" label="手机号码" width="120" />
         <el-table-column prop="department" label="院系" width="180" />
-        <el-table-column prop="classes" label="班级" width="180" />
         <el-table-column prop="job" label="职务" width="100" />
         <el-table-column prop="duty" label="职称" width="100" />
         <el-table-column prop="unity" label="单位" width="100" />
@@ -107,9 +107,21 @@
 import { ref, reactive, getCurrentInstance, onMounted, watch, toRef } from "vue";
 
 export default {
-  props: ["ruleForm"],
+  props: ["ruleForm", "query"],
   setup(props: any, content: any) {
 
+    interface teacher {
+      userAccount: "",
+      userName: "",
+      cardId: "",
+      phone: "",
+      department: "",
+      job: "",
+      duty: "",
+      unit: ""
+    }
+
+    const teacherInfoList = ref<teacher[]>([]);
     const context = getCurrentInstance()?.appContext.config.globalProperties;
     const user = context?.$store.state.loginUser;
     let teacher = ref(<{}>{
@@ -212,10 +224,43 @@ export default {
 
     }, { immediate: true, deep: true });
 
+    /**
+     * 监视选中的数据
+     * @param rows
+     * @param row
+     */
+    const onSelect = (rows: any, row: any) => {
+      (teacherInfoList as any).value.splice(0);
+      (teacherInfoList as any).value.push(...(rows as []));
+      console.log(teacherInfoList)
+    };
+
+    /**
+     * 监听 进行导出
+     */
+    watch(props.query, (newValue, oldValue) => {
+      // console.log("studentInfoList =")
+      // console.log(studentInfoList.value)
+      if (teacherInfoList.value.length === 0) {
+        context?.$message({ type: "warning", message: "您未选择任何数据" });
+        return;
+      }
+
+      const headers = ["学号", "姓名", "身份证号", "手机号码", "院系", "职务", "职称", "单位"];
+      const data = teacherInfoList.value.map(item => [item.userAccount, item.userName, item.cardId, item.phone, item.department, item.job, item.duty, item.unit]);
+      const value = { userRole: "teacher", headers: headers, data: data };
+      context?.$store.dispatch("exportExcel", value);
+      // console.log(...data)
+      // const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+      // const workbook = XLSX.utils.book_new();
+      // XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+      // const moment = require("moment");
+      // const formattedTime = moment().format("YYYYMMDDHHmmss");
+      // XLSX.writeFile(workbook, formattedTime + ".xlsx");
+    }, { immediate: false, deep: true });
+
     const handleClick = (row: {}) => {
-      user1.value = row;
-      // (teacher as any).value.userPassword = "";
-      // (teacher as any).value.checkRePassword = "";
+      user1.value = { ...row };
       dialogFormVisible.value = true;
     };
 
@@ -239,7 +284,7 @@ export default {
           localStorage.setItem("loginUser", JSON.stringify(res.data.data));
           user.value = res.data.data;
 
-          // console.log(archive);
+          getTable();
         } else {
           context?.$message({
             type: "error",
@@ -251,7 +296,7 @@ export default {
     };
 
     return {
-      tableData, handleClick, dialogFormVisible, teacher, updateUser, changePage, total, tmpList, pageSize, user1, deleteUser
+      tableData, handleClick, dialogFormVisible, teacher, updateUser, changePage, total, tmpList, pageSize, user1, deleteUser, onSelect
     };
   }
 };

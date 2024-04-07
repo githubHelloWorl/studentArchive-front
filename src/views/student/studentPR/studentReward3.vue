@@ -43,7 +43,7 @@
         <el-table-column label="操作" width="120" fixed="right">
           <template #default="scope">
             <el-button type="success" @click="handlerFind(scope.row)">查看</el-button>
-<!--            <el-button type="primary" @click="openPdf = true">查看证书</el-button>-->
+            <!--            <el-button type="primary" @click="openPdf = true">查看证书</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -54,7 +54,7 @@
                style="max-width: 600px;">
       <el-form :model="reward">
         <el-form-item v-if="title === '查看证书'" label="证书编号" prop="address">
-          <el-input v-model="reward.fileId" placeholder="请输入" size="large" :width="100" disabled/>
+          <el-input v-model="reward.fileId" placeholder="请输入" size="large" :width="100" disabled />
         </el-form-item>
         <el-form-item label="证书名称" prop="address">
           <el-input v-model="reward.fileName" placeholder="请输入证书名称" size="large" :width="100" />
@@ -80,28 +80,14 @@
           <el-button v-if="title === '新建证书'" type="primary" @click="handlerCreateReward">
             创建
           </el-button>
-          <el-button v-if="title === '查看证书'" @click="handlerDeleteReward" :disabled="reward.state === '2'">撤回</el-button>
-          <el-button v-if="title === '查看证书'" type="primary" @click="handlerUpdateReward" :disabled="reward.state === '2'">修改</el-button>
+          <el-button v-if="title === '查看证书'" @click="handlerDeleteReward" :disabled="reward.state === '2'">撤回
+          </el-button>
+          <el-button v-if="title === '查看证书'" type="primary" @click="handlerUpdateReward"
+                     :disabled="reward.state === '2'">修改
+          </el-button>
         </div>
       </template>
     </el-dialog>
-
-
-<!--    <el-dialog-->
-<!--      title="pdf预览.pdf"-->
-<!--      v-model="openPdf"-->
-<!--      @close="onClose"-->
-<!--      :close-on-click-modal="false"-->
-<!--      width="1050px"-->
-<!--    >-->
-<!--      &lt;!&ndash; 预览pdf文件 &ndash;&gt;-->
-<!--      <embed-->
-<!--        src="../../../assets/aaa.pdf"-->
-<!--        type="application/pdf"-->
-<!--        width="1010px"-->
-<!--        height="600px"-->
-<!--      />-->
-<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -117,6 +103,19 @@ let ruleForm = ref({
 });
 let dialogFormVisible = ref(<boolean>false);
 let reward = ref(<{}>{
+  sid: user.sid,
+  tid: null,
+  fileId: null,
+  fileName: null,
+  state: "0",
+  fileInfo: "1",
+  tname: null,
+  fileUnt: null,
+  stime: "",
+  fileTime: "",
+  fileUnit: ""
+});
+let reward2 = ref(<{}>{
   sid: user.sid,
   tid: null,
   fileId: null,
@@ -151,9 +150,11 @@ const handlerUpdateReward = () => {
     if (res.data.code === 0) {
       context?.$message({
         type: "success",
-        message: "上传成功"
+        message: "修改成功"
       });
-      await getTable();
+      getTable();
+
+      // reward.value = { ...reward2.value };
 
     } else {
       context?.$message({
@@ -204,7 +205,7 @@ const handlerCreate = () => {
  * 查看处理
  */
 const handlerFind = (row: {}) => {
-  reward.value = row;
+  reward.value = { ...row };
   title.value = "查看证书";
   dialogFormVisible.value = true;
 };
@@ -295,7 +296,6 @@ const getTable = () => {
 
       tableData.value.splice(0);
       tableData.value.push(...res.data.data);
-
 
     } else {
       context?.$message({

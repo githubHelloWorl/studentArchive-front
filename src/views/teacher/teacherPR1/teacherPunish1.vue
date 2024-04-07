@@ -3,13 +3,13 @@
     <el-card class="box-card all" style="margin-bottom: 10px;">
 
       <el-form :model="ruleForm" :inline="true" style="width: 80%;margin: 20px 0 0 10%;">
-        <el-form-item >
-        <el-button class="button" type="primary" @click="dialogFormVisible = true"
-        >新增处分
-          <el-icon style="margin-right: 5px;">
-            <DocumentAdd />
-          </el-icon>
-        </el-button>
+        <el-form-item>
+          <el-button class="button" type="primary" @click="dialogFormVisible = true"
+          >新增处分
+            <el-icon style="margin-right: 5px;">
+              <DocumentAdd />
+            </el-icon>
+          </el-button>
         </el-form-item>
         <el-form-item label="学号" prop="userAccount">
           <el-input v-model="ruleForm.userAccount" style="width: 240px;"></el-input>
@@ -64,31 +64,37 @@
 
     <el-dialog v-model="dialogFormVisible" title="新增处分" label-position="left" label-width="auto"
                style="max-width: 600px;">
-      <el-form :model="punish">
+      <el-form :model="punish" label-width="auto">
         <el-form-item label="处分名称" prop="fileName">
           <el-input v-model="punish.fileName" placeholder="请输入处分名称" size="large" :width="100" />
         </el-form-item>
-        <el-form-item label="学生姓名" prop="userName">
-          <el-select v-model="punish.sid" placeholder="请输入处分学生">
-            <el-option v-for="student in studentList" :key="student.userAccount" :label="student.userName"
-                       :value="student.userAccount">
-              {{ student.userAccount }} -- {{ student.userName }}
-            </el-option>
-          </el-select>
+        <!--        <el-form-item label="学生姓名" prop="userName">-->
+        <!--          <el-select v-model="punish.sid" placeholder="请输入处分学生">-->
+        <!--            <el-option v-for="student in studentList" :key="student.userAccount" :label="student.userName"-->
+        <!--                       :value="student.userAccount">-->
+        <!--              {{ student.userAccount }} &#45;&#45; {{ student.userName }}-->
+        <!--            </el-option>-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
+        <el-form-item label="姓名" prop="userName">
+          <el-autocomplete
+            v-model="punish.sid"
+            :fetch-suggestions="querySearch"
+            :trigger-on-focus="true"
+            clearable
+            class="inline-input w-50"
+            placeholder="请输入处分学生"
+            @select="handleSelect"
+          >
+            <template #default="{ item }">
+              <span class="link">{{ item.account + " - " + item.name }}</span>
+            </template>
+          </el-autocomplete>
         </el-form-item>
         <el-form-item label="学年学期" prop="stime">
           <el-input v-model="punish.stime" placeholder="请输入学期" size="large" :width="100" />
         </el-form-item>
-        <!--        <el-form-item label="颁发单位" prop="fileUnit">-->
-        <!--          <el-input v-model="punish.fileUnit" placeholder="请输入颁发单位" size="large" :width="100" />-->
-        <!--        </el-form-item>-->
       </el-form>
-      <!--      <el-select v-model="punish.tid" placeholder="请输入处分学生">-->
-      <!--        <el-option v-for="student in studentList" :key="student.userAccount" :label="student.userName"-->
-      <!--                   :value="student.userAccount">-->
-      <!--          {{ student.userAccount }} &#45;&#45; {{ student.userName }}-->
-      <!--        </el-option>-->
-      <!--      </el-select>-->
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -99,6 +105,9 @@
       </template>
     </el-dialog>
 
+    <!--    <el-dialog title="PDF预览" :visible.sync="dialogPdfVisible" @opened="loadPdf">-->
+    <!--      <div ref="pdfContainer" style="width: 100%; height: 500px;"></div>-->
+    <!--    </el-dialog>-->
   </div>
 </template>
 
@@ -115,6 +124,7 @@ let ruleForm = ref(<{}>{
   classes: ""
 });
 let dialogFormVisible = ref(<boolean>false);
+let dialogPdfVisible = ref<boolean>(false);
 let punish = ref(<{}>{
   sid: null,
   tid: user.userAccount,
@@ -132,6 +142,60 @@ let tableData = ref(<[]>[]);
 let total = ref(0);
 const pageSize = ref(10);
 let tmpList = ref(<[]>[]);
+const { proxy } = getCurrentInstance();
+
+/**
+ * 加载pdf文件
+ */
+// const loadPdf = () => {
+//   const loadingTask = pdfjsLib.getDocument(this.pdfUrl);
+//   loadingTask.promise.then(pdf => {
+//     pdf.getPage(1).then(page => {
+//       const viewport = page.getViewport({ scale: 1.5 });
+//       const canvas = document.createElement("canvas");
+//       canvas.style.width = `${viewport.width}px`;
+//       canvas.style.height = `${viewport.height}px`;
+//       canvas.width = viewport.width;
+//       canvas.height = viewport.height;
+//       const context = canvas.getContext("2d");
+//       const renderContext = {
+//         canvasContext: context,
+//         viewport: viewport
+//       };
+//       page.render(renderContext).promise.then(() => {
+//         proxy.$refs.pdfContainer.appendChild(canvas);
+//       });
+//     });
+//   }).catch(error => {
+//     console.error("Error loading PDF: ", error);
+//     console.log("---");
+//   });
+// };
+
+/**
+ *
+ * @param item
+ */
+let student_list = ref<{}[]>([]);
+// 智能搜索
+const querySearch = (queryString: string, cb: any) => {
+  const results = queryString
+    ? student_list.value.filter(createFilter(queryString))
+    : student_list.value;
+  console.log(results);
+  // call callback function to return suggestions
+  cb(results);
+};
+const createFilter = (queryString: string) => {
+  return (restaurant: any) => {
+    return (
+      restaurant.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+    );
+  };
+};
+const handleSelect = (item: any) => {
+  console.log(item);
+};
 
 /**
  * 改变页码
@@ -151,6 +215,7 @@ const changePage = (page: number) => {
  * 创建处分
  */
 const handlerCreatePunish = () => {
+  console.log(punish.value);
 
   context?.$myRequest({
     url: "/api/PR/createPR",
@@ -264,9 +329,12 @@ watch(ruleForm, async (newValue, oldValue) => {
 /**
  * 初始化
  */
-// onMounted(async () => {
-//   await getTable();
-// });
+onMounted(async () => {
+  student_list.value.splice(0);
+  studentList.forEach((item: any, index: number) => {
+    student_list.value.push({ value: item.userAccount, account: item.userAccount, name: item.userName });
+  });
+});
 </script>
 
 <style scoped>

@@ -1,5 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import { getCurrentInstance } from "vue";
+import myRequest from "@/plugins/axios";
+import { ElMessage } from "element-plus";
+import store from "@/store/index";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -195,8 +199,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   console.log(from.path + " ====> " + to.path);
 
-  const user = JSON.parse(localStorage.getItem("loginUser") as string);
-
   // 未登录
   if (localStorage.getItem("loginUser") === null) {
     // 登录界面
@@ -210,6 +212,7 @@ router.beforeEach((to, from, next) => {
     }
   }
 
+  const user = JSON.parse(localStorage.getItem("loginUser") as string);
   // 已登录
   if (to.path === "/") {
     if (user.userRole === "student") {
@@ -220,7 +223,23 @@ router.beforeEach((to, from, next) => {
       next({ path: "/adminInfo" });
     }
   }
+
+  myRequest({
+    url: "/api/user/getCurrentUser",
+    method: "GET"
+  }).then((res: any) => {
+    console.log(res);
+    if (res.data.data === null) {
+      ElMessage({ type: "error", message: "未登录,请重新登录" });
+      store.dispatch(("logout"));
+      next({ path: "/" });
+    } else {
+      // ElMessage({ type: "success", message: "登录" });
+    }
+  });
+
   next();
+
 });
 
 export default router;
