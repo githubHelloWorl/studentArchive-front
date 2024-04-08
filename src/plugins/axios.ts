@@ -1,10 +1,12 @@
 import qs from "qs";
 import axios from "axios";
+
 const myRequest = (options: any) => {
   return new Promise((resolve, reject) => {
     let url = options.url;
     let method = options.method || "GET";
     let data = options.data || {};
+    let headers = options.headers || {};
     if (method === "GET") {
       // 将data对象转化成字符串
       data = qs.stringify(data);
@@ -13,10 +15,11 @@ const myRequest = (options: any) => {
       method,
       url,
       data,
+      headers
     })
       .then((res) => {
-        console.log("响应 res.data = ")
-        console.log(res.data)
+        console.log("响应 res.data = ");
+        console.log(res.data);
         // 请求错误 res.data为空，或者res.data.status为空
         if (!(res.data && res.data.status)) {
           resolve(res);
@@ -29,8 +32,8 @@ const myRequest = (options: any) => {
         resolve({
           data: {
             msg: "请求错误",
-            status: -1,
-          },
+            status: -1
+          }
         });
       });
   });

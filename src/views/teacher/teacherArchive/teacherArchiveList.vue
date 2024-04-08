@@ -36,18 +36,27 @@
       >
         <el-descriptions-item label="档案编号">{{ archive.archiveId }}</el-descriptions-item>
         <el-descriptions-item label="学号">{{ archive.userAccount }}</el-descriptions-item>
-
-        <el-descriptions-item label="姓名">{{ archive.userName }}</el-descriptions-item>
-        <el-descriptions-item label="手机号">{{ archive.phone }}</el-descriptions-item>
-        <el-descriptions-item label="身份证号">{{ archive.cardId }}</el-descriptions-item>
+        <el-descriptions-item label="姓名">
+          <el-input v-model="archive.userName" placeholder="请输入姓名" size="default" />
+        </el-descriptions-item>
+        <el-descriptions-item label="身份证号">
+          <el-input v-model="archive.cardId" placeholder="请输入身份证号" size="default" />
+        </el-descriptions-item>
+        <el-descriptions-item label="手机号">
+          <el-input v-model="archive.phone" placeholder="请输入手机号" size="default" />
+        </el-descriptions-item>
         <el-descriptions-item label="性别">
           <el-select v-model="archive.sex">
             <el-option label="男" value="男">男</el-option>
             <el-option label="女" value="女">女</el-option>
           </el-select>
         </el-descriptions-item>
-        <el-descriptions-item label="院系">{{ archive.department }}</el-descriptions-item>
-        <el-descriptions-item label="班级">{{ archive.classes }}</el-descriptions-item>
+        <el-descriptions-item label="院系">
+          <el-input v-model="archive.department" placeholder="请输入院系" size="default" />
+        </el-descriptions-item>
+        <el-descriptions-item label="班级">
+          <el-input v-model="archive.classes" placeholder="请输入班级" size="default" />
+        </el-descriptions-item>
         <el-descriptions-item label="出生日期">
           <el-date-picker
             v-model="archive.createTime"
@@ -132,14 +141,9 @@ export default {
     };
 
     /**
-     * 监听
-     * 得到学生档案
+     * 得到列表
      */
-    watch(props.ruleForm, (newValue, oldValue) => {
-      if (props.ruleForm.flag === 0) {
-        return;
-      }
-
+    const getTable = () => {
       form.value = props.ruleForm;
 
       context?.$myRequest({
@@ -149,38 +153,25 @@ export default {
       }).then(function(res: { data: { code: number; data: []; message: String; }; }) {
         if (res.data.code === 0) {
 
-          // context?.$myRequest({
-          //   url: "/api/user/getUserAccountByClasses?classes=" + user?.classes,
-          //   method: "GET"
-          // }).then(function(resp: { data: { code: number; data: []; message: String; }; }) {
-          //   if (resp.data.code === 0) {
-          //
-          //     res.data.data.forEach((item: { sid: never, state: any }, index) => {
-          //       return item.state = resp.data.data.includes(item.sid);
-          //     });
-          //
-          //     // console.log("res.data.data =");
-          //     // console.log(res.data.data);
-          //
-          //     // // 进行赋值
-          //     // tmpList.splice(0);
-          //     // tmpList.push(...res.data.data);
-          //     // total.value = tmpList.length;
-          //     // let start = 0, end = pageSize.value;
-          //     // let length = tmpList.length;
-          //     // let ans = (end < length) ? end : length;
-          //     // tableData.splice(0);
-          //     // tableData.push(...tmpList.slice(start, end));
-          //
-          //     // tableKey.value = Math.random();
-          //     // console.log(tmpList);
-          //     // console.log(tableData);
-          //     // context?.$message({
-          //     //   type: "success",
-          //     //   messag: res.data.message
-          //     // });
-          //   }
-          // });
+          // 更改学生信息
+          context?.$myRequest({
+            url: "/api/user/queryPostStudent",
+            method: "POST",
+            data: {}
+          }).then(function(res: any) {
+            if (res.data.code === 0) {
+
+              studentList.splice(0);
+              studentList.push(...(res.data.data as []));
+              localStorage.setItem("studentList", JSON.stringify(studentList));
+
+            } else {
+              context?.$message({
+                type: "error",
+                message: res.data.message
+              });
+            }
+          });
 
           let tempList = ref(<[]>[]);
           // 将学生信息添加上去 院系 班级
@@ -214,26 +205,38 @@ export default {
 
         props.ruleForm.flag = 0;
       });
+    };
+
+    /**
+     * 监听
+     * 得到学生档案
+     */
+    watch(props.ruleForm, (newValue, oldValue) => {
+      if (props.ruleForm.flag === 0) {
+        return;
+      }
+
+      getTable();
 
     }, { immediate: true, deep: true });
 
-
+    /**
+     * 得到奖惩信息
+     * @param row
+     */
     const handleClick = (row: {}) => {
       archive.value = row;
       getPRByuserAccount((row as any).sid);
       dialogFormVisible.value = true;
-      // console.log(archive.value);
     };
 
     /**
      * 修改档案
      */
     const updateArchive = () => {
-      console.log("updateArchive = ");
-      console.log(archive.value);
 
       context?.$myRequest({
-        url: "/api/archive/updateArchive",
+        url: "/api/user/updateUserArchive",
         method: "POST",
         data: archive.value
       }).then(function(res: { data: { code: number; data: {}; message: String; }; }) {
@@ -242,6 +245,7 @@ export default {
             type: "success",
             message: "档案修改成功"
           });
+          getTable();
         } else {
           context?.$message({
             type: "error",

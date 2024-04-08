@@ -73,6 +73,23 @@
         <el-form-item label="学年学期" prop="stime">
           <el-input v-model="reward.stime" placeholder="请输入学年学期" size="large" :width="100" />
         </el-form-item>
+        <el-form-item label="上传图片" prop="image">
+          <el-upload
+            class="avatar-uploader"
+            action="/api/archive/img"
+            :draggable="true"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="reward.filePath" :src="reward.filePath" class="avatar"
+                 style="max-height: 200px; max-width: 200px;" />
+            <el-icon v-else class="avatar-uploader-icon">
+              <Plus />
+            </el-icon>
+          </el-upload>
+          <span v-if="title === '新建证书'">证书大小不能超过 2MB!</span>
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -93,8 +110,11 @@
 
 <script setup lang="ts">
 import { ref, reactive, getCurrentInstance, onMounted } from "vue";
-import { DocumentAdd } from "@element-plus/icons-vue";
+import { DocumentAdd, Plus } from "@element-plus/icons-vue";
+import type { UploadProps, UploadFile } from "element-plus";
 
+const imageUrl = ref("");
+const aaa = ref<string>("aaa.jpg");
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 // const user = context?.$store.state.loginUser;
 const user = JSON.parse(localStorage.getItem("loginUser") as string);
@@ -113,7 +133,8 @@ let reward = ref(<{}>{
   fileUnt: null,
   stime: "",
   fileTime: "",
-  fileUnit: ""
+  fileUnit: "",
+  filePath: ""
 });
 let reward2 = ref(<{}>{
   sid: user.sid,
@@ -132,12 +153,104 @@ let teacherList = JSON.parse(localStorage.getItem("teacherList") as string);
 let tableData = ref(<[]>[]);
 let openPdf = ref(<boolean>false);
 let title = ref("");
+let loading = ref<string>("2");
 
 // 关闭弹窗
 const onClose = () => {
   openPdf.value = false;
 };
 
+/**
+ * 上传图片
+ * @param file
+ */
+// const upload = (file: any) => {
+//   loading.value = "1";
+//   let data = new FormData();
+//   data.append("image", file.file);
+//
+//   context?.$myRequest({
+//     url: "/api/archive/img",
+//     method: "POST",
+//     headers: { "Content-Type": "multipart/form-data" },
+//     data: file
+//   }).then(async function(res: any) {
+//     if (res.data.code === 0) {
+//       context?.$message({
+//         type: "success",
+//         message: "图片上传成功"
+//       });
+//       reward.value.filePath = res.data.data;
+//       console.log(reward.value.filePath);
+//
+//       setTimeout(() => {
+//         loading.value = "0";
+//       }, 2000);
+//     } else {
+//       context?.$message({
+//         type: "error",
+//         message: res.data.message
+//       });
+//     }
+//   });
+// };
+
+const beforeAvatarUpload: UploadProps["beforeUpload"] = (file) => {
+  if (file.type !== "image/jpeg") {
+    context?.$message.error("必须是JPG格式!");
+    return false;
+  }
+  if (file.size / 1024 / 1024 > 2) {
+    context?.$message.error("大小不能超过2MB!");
+    return false;
+  }
+  return true;
+};
+
+//图片上传成功的钩子
+const handleAvatarSuccess: UploadProps["onSuccess"] = (response: any, uploadFile: UploadFile) => {
+  //图片上传成功,清除掉对应图片校验结果
+  imageUrl.value = URL.createObjectURL(uploadFile.raw!);
+  console.log(imageUrl.value);
+  console.log("uploadFile =");
+  console.log(uploadFile);
+  context?.$message({ type: "success", message: "图片上传成功" });
+  reward.value.filePath = imageUrl.value;
+  // loading.value = "0";
+};
+//上传图片组件->上传图片之前触发的钩子函数
+// const beforeAvatarUpload: UploadProps['beforeUpload'] = async (rawFile: any) => {
+//   //请求上传文件的接口
+//   // let res = await reqUpload(rawFile)
+//   //将接口的地址赋值给表单并呈现
+//   // chargeForm.imageUrl = res.data.url
+//   //上传图片格式和大小要求  png|jpg  4M
+//   if (rawFile.type !== 'image/png' || rawFile.type == 'image/jpg') {
+//     ElMessage.error('上传文件格式务必PNG|JPG')
+//     return false
+//   } else if (rawFile.size / 1024 / 1024 > 4) {
+//     ElMessage.error('上传文件大小小于4M')
+//     return false
+//   }
+//   // 取消默认的上传请求
+//   return false
+// };
+
+/**
+ * 得到图片
+ */
+const getImg = () => {
+  try {
+    return require("@/assets/" + reward.value.filePath);
+    //图片地址
+  } catch (e) {
+    if (reward.value.filePath === "") {
+      loading.value = "2";
+    }
+    return require("@/assets/error.png");
+    //图片找不到时，使用默认图片
+  }
+};
 /**
  * 更改证书
  */
@@ -198,6 +311,7 @@ const handlerDeleteReward = () => {
  */
 const handlerCreate = () => {
   title.value = "新建证书";
+  loading.value = "2";
   dialogFormVisible.value = true;
 };
 
@@ -205,8 +319,10 @@ const handlerCreate = () => {
  * 查看处理
  */
 const handlerFind = (row: {}) => {
-  reward.value = { ...row };
+  reward.value = row;
+  console.log(reward.value);
   title.value = "查看证书";
+  loading.value = "0";
   dialogFormVisible.value = true;
 };
 
@@ -291,11 +407,11 @@ const getTable = () => {
         });
       });
 
-      console.log("res.data.data = ");
-      console.log(res.data.data);
+      // console.log("res.data.data = ");
+      // console.log(res.data.data);
 
       tableData.value.splice(0);
-      tableData.value.push(...res.data.data);
+      tableData.value.push(...(res.data.data as []));
 
     } else {
       context?.$message({
@@ -310,7 +426,7 @@ const getTable = () => {
  * 初始化
  */
 onMounted(async () => {
-  await getTable();
+  getTable();
 });
 </script>
 
@@ -318,5 +434,26 @@ onMounted(async () => {
 .button {
   width: 200px;
 
+}
+
+.avatar-uploader {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
 }
 </style>

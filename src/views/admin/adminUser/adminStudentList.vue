@@ -84,7 +84,7 @@ import * as XLSX from "xlsx";
 import moment from "moment/moment";
 
 export default {
-  props: ["ruleForm", "query"],
+  props: ["ruleForm", "query", "allDelete"],
   setup(props: any, content: any) {
     interface student {
       userAccount: "",
@@ -107,6 +107,7 @@ export default {
     let form = ref({});
     let dialogFormVisible = ref(false);
     let teacherList = JSON.parse(localStorage.getItem("teacherList") as string);
+    let studentList = JSON.parse(localStorage.getItem("studentList") as string);
     let total = ref(0);
     const pageSize = ref(10);
     let tmpList = ref(<[]>[]);
@@ -247,6 +248,63 @@ export default {
       // const formattedTime = moment().format("YYYYMMDDHHmmss");
       // XLSX.writeFile(workbook, formattedTime + ".xlsx");
     }, { immediate: false, deep: true });
+
+    /**
+     * 批量删除
+     */
+    const allDelete = () => {
+      if (studentInfoList.value.length === 0) {
+        context?.$message({ type: "warning", message: "您未选择任何数据" });
+        return;
+      }
+      context?.$myRequest({
+        url: "/api/user/allDelete",
+        method: "POST",
+        data: studentInfoList.value
+      }).then(function(res: { data: { code: number; data: {}; message: String; }; }) {
+        if (res.data.code === 0) {
+          context?.$message({
+            type: "success",
+            message: "档案修改成功"
+          });
+
+          context?.$myRequest({
+            url: "/api/user/queryPostStudent",
+            method: "POST",
+            data: {}
+          }).then(function(res: any) {
+            if (res.data.code === 0) {
+
+              studentList.splice(0);
+              studentList.push(...(res.data.data as []));
+              localStorage.setItem("studentList", JSON.stringify(studentList));
+
+            } else {
+              context?.$message({
+                type: "error",
+                message: res.data.message
+              });
+            }
+          });
+
+          getTable();
+
+        } else {
+          context?.$message({
+            type: "error",
+            message: res.data.message
+          });
+        }
+      });
+    };
+    watch(props.allDelete, (newValue, oldValue) => {
+      if (props.allDelete.a === 0) {
+        return;
+      }
+
+      allDelete();
+
+    }, { immediate: true, deep: true });
 
     /**
      * 监视选中的数据

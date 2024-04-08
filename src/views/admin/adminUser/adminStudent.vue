@@ -19,7 +19,7 @@
         </el-form>
         <div style="margin: auto;">
           <el-row :gutter="10">
-            <el-col :span="9"></el-col>
+            <el-col :span="8"></el-col>
             <el-col :span="2">
               <el-button @click="archiveQuery" type="primary">查询</el-button>
             </el-col>
@@ -36,12 +36,15 @@
                 <el-button slot="trigger" type="primary">导入</el-button>
               </el-upload>
             </el-col>
+            <el-col :span="2">
+              <el-button @click="changeDelete" type="primary">批量删除</el-button>
+            </el-col>
           </el-row>
         </div>
       </div>
     </el-card>
 
-    <admin-student-list :ruleForm="ruleForm" :query="query"></admin-student-list>
+    <admin-student-list :ruleForm="ruleForm" :allDelete="allDelete" :query="query"></admin-student-list>
   </div>
 </template>
 
@@ -80,6 +83,7 @@ let ruleForm = ref({
   flag: 0
 });
 let query = ref({ a: 0 });
+const allDelete = ref({ a: 0 });
 let dialogFormVisible = ref(false);
 let flag = ref({ a: 0 });
 let pageSize = ref({ a: 10 });
@@ -93,6 +97,13 @@ const archiveQuery = () => {
 
 const changeQuery = () => {
   query.value.a += 1;
+};
+
+/**
+ * 使用批量删除
+ */
+const changeDelete = () => {
+  allDelete.value.a += 1;
 };
 
 /**

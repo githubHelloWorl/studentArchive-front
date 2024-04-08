@@ -98,7 +98,6 @@
         border
       >
         <el-descriptions-item label="证书编号">{{ file.fileId }}</el-descriptions-item>
-
         <el-descriptions-item label="学生学号">{{ file.sid }}</el-descriptions-item>
         <el-descriptions-item label="学生姓名">{{ file.userName }}</el-descriptions-item>
         <el-descriptions-item label="学年学期">{{ file.stime }}</el-descriptions-item>
@@ -111,9 +110,13 @@
           {{ new Date(file.submitTime).toLocaleDateString() }}
         </el-descriptions-item>
         <el-descriptions-item label="审核教师">{{ file.tname }}</el-descriptions-item>
-        <el-descriptions-item label="审核时间">  <!-- TODO 4 文件审核时间  -->
+        <el-descriptions-item label="审核时间" :span="3">  <!-- TODO 4 文件审核时间  -->
           <span v-if="file.checkTime !== null">{{ new Date(file.checkTime).toLocaleDateString() }}</span>
           <span v-else>...</span>
+        </el-descriptions-item>
+        <el-descriptions-item label="获奖证书" :span="3">
+          <img :src="file.filePath" class="avatar"
+               style="max-height: 200px; max-width: 200px;" />
         </el-descriptions-item>
       </el-descriptions>
 
@@ -131,6 +134,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, getCurrentInstance, onMounted, watch } from "vue";
+import { Plus } from "@element-plus/icons-vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 // const user = context?.$store.state.loginUser;
@@ -159,6 +163,7 @@ let teacherList = JSON.parse(localStorage.getItem("teacherList") as string);
 let total = ref(0);
 const pageSize = ref(10);
 let tmpList = ref(<[]>[]);
+const loading = ref<string>("0");
 
 
 // 是否打开弹窗
@@ -168,11 +173,27 @@ const onClose = () => {
   openPdf.value = false;
 };
 
+/**
+ * 得到图片
+ */
+const getImg = () => {
+  try {
+    return require("@/assets/" + file.value.filePath);
+    //图片地址
+  } catch (e) {
+    if (file.value.filePath === "") {
+      loading.value = "2";
+    }
+    return require("@/assets/error.png");
+    //图片找不到时，使用默认图片
+  }
+};
 
 /**
  * 查看信息
  */
 const handlerReward = (row: any) => {
+  loading.value = "0";
   file.value = { ...row };
   dialogFormVisible.value = true;
 };

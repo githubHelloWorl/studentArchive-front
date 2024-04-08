@@ -94,19 +94,19 @@
         <el-descriptions-item label="颁发时间">
           {{ new Date(file.fileTime).toLocaleDateString() }}
         </el-descriptions-item>
-        <el-descriptions-item label="审核时间">
+        <el-descriptions-item label="审核时间" :span="3">
           <span v-if="file.checkTime !== null">{{ new Date(file.checkTime).toLocaleDateString() }}</span>
           <span v-else>...</span>
+        </el-descriptions-item>
+        <el-descriptions-item label="获奖证书" :span="3">
+          <img :src="file.filePath" class="avatar"
+               style="max-height: 200px; max-width: 200px;" />
         </el-descriptions-item>
       </el-descriptions>
 
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <!--          <el-button @click="handlerToReward('1')" :disabled="file.state === '2'">等待</el-button>-->
-          <!--          <el-button type="primary" @click="handlerToReward('2')">-->
-          <!--            批准-->
-          <!--          </el-button>-->
         </div>
       </template>
     </el-dialog>
@@ -115,6 +115,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, getCurrentInstance, onMounted, watch } from "vue";
+import { Plus } from "@element-plus/icons-vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 // const user = context?.$store.state.loginUser;
@@ -144,6 +145,23 @@ let total = ref(0);
 let pageSize = ref(10);
 let file = ref(<{}>{});
 let teacherList = JSON.parse(localStorage.getItem("teacherList") as string);
+const loading = ref<string>("0");
+
+/**
+ * 得到图片
+ */
+const getImg = () => {
+  try {
+    return require("@/assets/" + file.value.filePath);
+    //图片地址
+  } catch (e) {
+    if (file.value.filePath === "") {
+      loading.value = "2";
+    }
+    return require("@/assets/error.png");
+    //图片找不到时，使用默认图片
+  }
+};
 
 /**
  * 分页
@@ -184,9 +202,6 @@ const handlerToReward = (state: String) => {
         type: "success",
         message: "修改成功"
       });
-
-      // tableData.value.splice(0);
-      // tableData.value.push(...res.data.data);
 
     } else {
       context?.$message({

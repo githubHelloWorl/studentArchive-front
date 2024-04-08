@@ -50,7 +50,7 @@
     <el-dialog v-model="dialogFormVisible" title="修改个人信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="user2" label-width="auto">
-        <el-form-item label="学号" prop="userAccount">
+        <el-form-item label="教师工号" prop="userAccount">
           {{ user2.userAccount }}
         </el-form-item>
         <el-form-item label="姓名" prop="userName">
