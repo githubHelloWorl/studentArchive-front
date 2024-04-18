@@ -21,7 +21,7 @@
           </el-form-item>
           <el-form-item label="验证码">
             <el-input placeholder="请输入验证码" v-model="sidentifyMode" style="width: 220px;" clearable></el-input>
-            <SIdentify :identifyCode="identifyCode" @click="refreshCode"></SIdentify>
+            <div style="border: solid red 0px;"><SIdentify :identifyCode="identifyCode" @click="refreshCode"></SIdentify></div>
           </el-form-item>
           <el-form-item prop="" style="margin: auto;">
             <el-space :size="10" style="margin-left:30%;">
@@ -171,20 +171,20 @@ const handleLogin = () => {
     userPassword: loginForm.value.userPassword
   };
 
+  if (sidentifyMode.value !== identifyCode.value) {
+    context?.$message({
+      type: "error",
+      message: "验证码不正确,请重新输入"
+    });
+    refreshCode();
+    return;
+  }
+
   context?.$myRequest({ url: "/api/user/login", method: "POST", data: form }).then(function(res) {
     if (res.data.code === 0) {
 
       context?.$store.dispatch("setUser", res.data.data);
       localStorage.setItem("loginUser", JSON.stringify(res.data.data));
-
-      if (sidentifyMode.value !== identifyCode.value) {
-        context?.$message({
-          type: "error",
-          message: "验证码不正确,请重新输入"
-        });
-        refreshCode();
-        return;
-      }
 
       context?.$myRequest({
         url: "/api/user/queryUserByRole?userRole=teacher",

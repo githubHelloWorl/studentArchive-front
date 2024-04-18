@@ -228,11 +228,13 @@ router.beforeEach((to, from, next) => {
     url: "/api/user/getCurrentUser",
     method: "GET"
   }).then((res: any) => {
-    console.log(res);
+   // console.log(res);
     if (res.data.data === null) {
-      ElMessage({ type: "error", message: "未登录,请重新登录" });
-      store.dispatch(("logout"));
-      next({ path: "/" });
+      if(to.path !== "/register") {
+        ElMessage({ type: "error", message: "未登录,请重新登录" });
+        store.dispatch(("logout"));
+        next({ path: "/" });
+      }
     } else {
       // ElMessage({ type: "success", message: "登录" });
     }

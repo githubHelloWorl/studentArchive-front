@@ -30,7 +30,7 @@
         <el-table-column prop="classes" label="班级" width="180" />
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="scope">
-            <el-button type="primary" style="width: 80px;" @click="handleClick(scope.row)">修改
+            <el-button type="primary" style="width: 80px;" @click="handleClick(scope.row)">修改密码
             </el-button>
             <el-popconfirm
               title="确定删除?"
@@ -55,20 +55,26 @@
         <el-form-item label="姓名" prop="userName">
           {{ student.userName }}
         </el-form-item>
-        <el-form-item label="院系" prop="department">
-          <el-input v-model="student.department" placeholder="请输入院系" size="default" />
+<!--        <el-form-item label="院系" prop="department">-->
+<!--          <el-input v-model="student.department" placeholder="请输入院系" size="default" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="班级" prop="classes">-->
+<!--          <el-input v-model="student.classes" placeholder="请输入班级" size="default" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="手机号" prop="phone">-->
+<!--          <el-input v-model="student.phone" placeholder="请输入手机号" size="default" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="密码" prop="userPassword">
+          <el-input v-model="student.userPassword" placeholder="请输入密码" size="default" type="password" show-password/>
         </el-form-item>
-        <el-form-item label="班级" prop="classes">
-          <el-input v-model="student.classes" placeholder="请输入班级" size="default" />
-        </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="student.phone" placeholder="请输入手机号" size="default" />
+        <el-form-item label="确认密码" prop="checkRePassword">
+          <el-input v-model="student.checkRePassword" placeholder="请输入确认密码" size="default" type="password" show-password/>
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="updateUser">
+          <el-button type="primary" @click="updatePass">
             修改
           </el-button>
         </div>
@@ -168,7 +174,7 @@ export default {
     };
 
     /**
-     *
+     * 得到数据
      */
     const getTable = () => {
       form.value = {
@@ -364,7 +370,7 @@ export default {
     };
 
     /**
-     * 修改档案
+     * 修改密码
      */
     const updatePass = () => {
 
@@ -393,7 +399,6 @@ export default {
       handleClick,
       dialogFormVisible,
       student,
-      updatePass,
       changePage,
       handleSizeChange,
       total,
@@ -404,7 +409,8 @@ export default {
       deleteUser,
       onSelect,
       selectAllChange,
-      handleSelectionChange
+      handleSelectionChange,
+      updatePass
     };
   }
 };

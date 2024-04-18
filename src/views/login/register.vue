@@ -141,7 +141,7 @@ onMounted(() => {
 
 <style scoped>
 .login_view {
-  background-repeat: no-repeat;
+  background-repeat: repeat;
   flex-direction: column;
   background-size: cover;
   background: url("@/assets/background.png");
@@ -153,19 +153,18 @@ onMounted(() => {
   position: relative;
   background-position: center center;
   /* 表单盒子 */
+}
 
-  .login_form {
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, .5);
-    /*padding: 30px 100px;*/
-    background: #fff;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
+.login_form {
+  border-radius: 50px;
+  //box-shadow: 0 4px 6px rgba(0, 0, 0, .5);
+  /*padding: 30px 100px;*/
+  background: #fff;
+  //display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .login {
