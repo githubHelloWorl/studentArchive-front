@@ -1,16 +1,17 @@
+<!--获奖-->
 <template>
   <div>
     <el-card class="box-card all" style="margin-bottom: 10px;">
-      <el-form :model="ruleForm" :inline="true" style="width: 80%;margin-left: 10%;margin-top: 9px;">
+      <el-form :model="ruleForm" :inline="true" style="width: 100%;margin-left: 1%;margin-top: 9px;">
         <el-form-item label="学号" prop="userAccount">
           <el-input v-model="ruleForm.userAccount" style="width: 200px;"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名" prop="userName">
+          <el-input v-model="ruleForm.userName" style="width: 200px;"></el-input>
         </el-form-item>
         <el-form-item label="班级" prop="classes">
           <el-input v-model="ruleForm.classes" style="width: 200px;"></el-input>
         </el-form-item>
-        <!--        <el-form-item label="学年学期" prop="stime">-->
-        <!--          <el-input v-model="ruleForm.stime" style="width: 240px;"></el-input>-->
-        <!--        </el-form-item>-->
         <el-form-item label="状态" prop="state">
           <el-select v-model="ruleForm.state" style="width: 200px;">
             <el-option label="全部" value="">全部</el-option>
@@ -20,48 +21,40 @@
           </el-select>
         </el-form-item>
       </el-form>
+      <di>
+        <el-button type="primary" style="width: 80px;" @click="handlerQuery">查询</el-button>
+      </di>
     </el-card>
 
     <el-card>
-      <el-table :data="tableData" border stripe style="width: 100%;">
-        <el-table-column prop="fileId" label="证书编号" width="140" />
-        <el-table-column prop="sid" label="学生学号" width="100" />
-        <el-table-column prop="userName" label="学生姓名" width="90" />
-        <el-table-column prop="stime" label="学年学期" width="120" />
-        <el-table-column prop="fileName" label="证书名称" width="120" />
-        <el-table-column prop="fileUnit" label="颁发单位" width="210" />
-        <el-table-column prop="fileTime" label="颁发时间" width="120">
-          <template #default="scope">
-            {{ new Date(scope.row.fileTime).toLocaleDateString() }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="submitTime" label="提交时间" width="90">
-          <template #default="scope">
-            {{ new Date(scope.row.submitTime).toLocaleDateString() }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="tname" label="审核教师" width="120" />
-        <el-table-column prop="checkTime" label="审核时间" width="120">
+      <el-table :data="tableData" border stripe style="width: 94%;margin-left: 3%">
+        <el-table-column prop="fileId" label="证书编号" width="160" align="center"/>
+        <el-table-column prop="fileName" label="证书名称" width="130" align="center"/>
+        <el-table-column prop="sid" label="学生学号" width="120" align="center"/>
+        <el-table-column prop="userName" label="学生姓名" width="120" align="center"/>
+        <el-table-column prop="classes" label="学生班级" width="165" align="center"/>
+        <el-table-column prop="tname" label="审核教师" width="120" align="center"/>
+        <el-table-column prop="checkTime" label="审核时间" width="100" align="center">
           <template #default="scope">
             <span v-if="scope.row.checkTime !== null">{{ new Date(scope.row.checkTime).toLocaleDateString() }}</span>
             <span v-else>...</span>
           </template>
         </el-table-column>
-        <el-table-column prop="state" label="审核状态" width="100" fixed="right">
+        <el-table-column prop="state" label="审核状态" width="100" fixed="right" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.state === '0'" type="danger" effect="dark">未审核</el-tag>
             <el-tag v-else-if="scope.row.state === '1'" type="info" effect="dark">不通过</el-tag>
             <el-tag v-else-if="scope.row.state === '2'" type="success" effect="dark">审核通过</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right">
+        <el-table-column label="操作" fixed="right" align="center">
           <template #default="scope">
-            <el-button type="primary" @click="handlerReward(scope.row)">查看</el-button>
+            <el-button type="primary" @click="handlerReward(scope.row)" style="width: 90px;">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-        style="margin: 20px 0 0 0;"
+          style="margin: 20px 0 0 3%;"
         background
         layout="prev, pager, next"
         :total="total"
@@ -93,30 +86,30 @@
 
       <el-descriptions
         direction="vertical"
-        :column="3"
+        :column="4"
         :size="'default'"
         border
       >
-        <el-descriptions-item label="证书编号">{{ file.fileId }}</el-descriptions-item>
-        <el-descriptions-item label="学生学号">{{ file.sid }}</el-descriptions-item>
-        <el-descriptions-item label="学生姓名">{{ file.userName }}</el-descriptions-item>
-        <el-descriptions-item label="学年学期">{{ file.stime }}</el-descriptions-item>
-        <el-descriptions-item label="证书名称">{{ file.fileName }}</el-descriptions-item>
-        <el-descriptions-item label="颁发单位">{{ file.fileUnit }}</el-descriptions-item>
-        <el-descriptions-item label="颁发时间">
+        <el-descriptions-item label="证书编号" width="25%" align="center">{{ file.fileId }}</el-descriptions-item>
+        <el-descriptions-item label="学生学号" width="25%" align="center">{{ file.sid }}</el-descriptions-item>
+        <el-descriptions-item label="学生姓名" width="25%" align="center">{{ file.userName }}</el-descriptions-item>
+        <el-descriptions-item label="学年学期" width="25%" align="center">{{ file.stime }}</el-descriptions-item>
+        <el-descriptions-item label="证书名称" width="25%" align="center">{{ file.fileName }}</el-descriptions-item>
+        <el-descriptions-item label="颁发单位" width="25%" align="center">{{ file.fileUnit }}</el-descriptions-item>
+        <el-descriptions-item label="颁发时间" width="25%" align="center">
           {{ new Date(file.fileTime).toLocaleDateString() }}
         </el-descriptions-item>
-        <el-descriptions-item label="提交时间">
+        <el-descriptions-item label="提交时间" width="25%" align="center">
           {{ new Date(file.submitTime).toLocaleDateString() }}
         </el-descriptions-item>
-        <el-descriptions-item label="审核教师">{{ file.tname }}</el-descriptions-item>
-        <el-descriptions-item label="审核时间" :span="3">  <!-- TODO 4 文件审核时间  -->
+        <el-descriptions-item label="审核教师" width="25%" align="center">{{ file.tname }}</el-descriptions-item>
+        <el-descriptions-item label="审核时间" align="center">  <!-- TODO 4 文件审核时间  -->
           <span v-if="file.checkTime !== null">{{ new Date(file.checkTime).toLocaleDateString() }}</span>
           <span v-else>...</span>
         </el-descriptions-item>
-        <el-descriptions-item label="获奖证书" :span="3">
-          <img :src="file.filePath" class="avatar"
-               style="max-height: 200px; max-width: 200px;" />
+        <el-descriptions-item label="获奖证书" :span="2" align="center">
+          <el-image v-if="file.filePath" :src="imageUrl" fit="contain"
+                    style="max-width: 200px;max-height: 300px;"/>
         </el-descriptions-item>
       </el-descriptions>
 
@@ -133,14 +126,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, getCurrentInstance, onMounted, watch } from "vue";
-import { Plus } from "@element-plus/icons-vue";
+import {getCurrentInstance, ref, watch} from "vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
-// const user = context?.$store.state.loginUser;
 const user = JSON.parse(localStorage.getItem("loginUser") as string);
 let ruleForm = ref({
   userAccount: "",
+  userName: "",
   state: "",
   fileInfo: "1",
   classes: "",
@@ -164,7 +156,7 @@ let total = ref(0);
 const pageSize = ref(10);
 let tmpList = ref(<[]>[]);
 const loading = ref<string>("0");
-
+const imageUrl = ref("");
 
 // 是否打开弹窗
 const openPdf = ref(false);
@@ -195,6 +187,17 @@ const getImg = () => {
 const handlerReward = (row: any) => {
   loading.value = "0";
   file.value = { ...row };
+
+  let image = row.filePath;
+  if (image) {
+    try{
+      imageUrl.value = require("@/assets/image/" + image);
+    }catch(e){
+      console.log("e =")
+      console.log(e)
+      imageUrl.value = require("@/assets/image/error.png")
+    }
+  }
   dialogFormVisible.value = true;
 };
 
@@ -270,18 +273,12 @@ const getTable = () => {
       tmpList.value.splice(0);
       tmpList.value.push(...(res.data.data as []));
       total.value = res.data.data.length;
-      // console.log("total = ")
-      // console.log(total)
       let start = 0,
         end = pageSize.value;
       let length = tmpList.value.length;
       let ans = end < length ? end : length;
       tableData.value.splice(0);
       tableData.value.push(...tmpList.value.slice(start, ans));
-      // tableData.value.push(...(res.data.data as []));
-
-      // tableData.value.splice(0);
-      // tableData.value.push(...res.data.data);
 
     } else {
       context?.$message({
@@ -292,9 +289,16 @@ const getTable = () => {
   });
 };
 
-watch(ruleForm, async (newValue, oldValue) => {
+/**
+ * 进行查询
+ */
+const handlerQuery = async () => {
   await getTable();
-}, { immediate: true, deep: true });
+}
+
+// watch(ruleForm, async (newValue, oldValue) => {
+//   await getTable();
+// }, { immediate: true, deep: true });
 
 </script>
 

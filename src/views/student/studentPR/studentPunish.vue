@@ -6,30 +6,6 @@
       >新增通知
       </el-button>
     </el-card>
-
-    <!--    <el-card class="box-card all">-->
-    <!--      <el-table :data="tableData" border stripe style="width: 100%;" :key="tableKey">-->
-    <!--        &lt;!&ndash;          <el-table-column prop="id" ></el-table-column>&ndash;&gt;-->
-    <!--        <el-table-column prop="createTime" label="时间" width="180">-->
-    <!--          <template #default="scope">-->
-    <!--            &lt;!&ndash;            {{ new Date(scope.row.createTime).toLocaleDateString() }}&ndash;&gt;-->
-    <!--            <el-date-picker-->
-    <!--              v-model="scope.row.noticeTime"-->
-    <!--              type="date"-->
-    <!--              :disabled="true"-->
-    <!--            />-->
-    <!--          </template>-->
-    <!--        </el-table-column>-->
-    <!--        <el-table-column prop="noticeTitle" label="标题" width="180" />-->
-    <!--        <el-table-column label="操作" width="180">-->
-    <!--          <template #default="scope">-->
-    <!--            <el-button type="primary" @click="handleClick(scope.row)">查看-->
-    <!--            </el-button>-->
-    <!--          </template>-->
-    <!--        </el-table-column>-->
-    <!--      </el-table>-->
-    <!--    </el-card>-->
-
     <el-dialog v-model="dialogFormVisible" title="新增信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="reward">
@@ -62,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, getCurrentInstance, onMounted } from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 const user = context?.$store.state.loginUser;
@@ -99,9 +75,6 @@ const handlerCreateReward = () => {
         message: "上传成功"
       });
 
-      // teacherList.splice(0);
-      // teacherList.push(...res.data.data);
-
     } else {
       context?.$message({
         type: "error",
@@ -120,10 +93,6 @@ onMounted(() => {
     method: "GET"
   }).then(function(res: any) {
     if (res.data.code === 0) {
-      // context?.$message({
-      //   type: "success",
-      //   message: "档案修改成功"
-      // });
 
       teacherList.splice(0);
       teacherList.push(...res.data.data);

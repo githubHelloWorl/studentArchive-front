@@ -1,11 +1,13 @@
+<!--  验证码-->
 <template>
+
   <div class="s-canvas">
     <canvas id="s-canvas" :width="props.contentWidth" :height="props.contentHeight"></canvas>
   </div>
 </template>
 
 <script setup>
-import { onMounted, watch } from "vue";
+import {onMounted, watch} from "vue";
 
 // eslint-disable-next-line no-undef
 const props = defineProps({

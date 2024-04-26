@@ -1,15 +1,16 @@
 <template>
   <div>
+    <!--    新增通知按钮    -->
     <el-card class="box-card all" style="margin-bottom: 10px;">
       <el-button class="button" type="text" @click="dialogFormVisible = true"
-                 style="float: right;margin-right: 20px;"
+                 style="float: right;margin-right: 11%;"
       >新增通知
       </el-button>
-
+      <!--通知搜索-->
       <div>
         <el-form :model="ruleForm" :inline="true">
           <el-form-item label="标题内容" prop="userName">
-            <el-input v-model="ruleForm.noticeTitle" style="width: 240px;" />
+            <el-input v-model="ruleForm.noticeTitle" style="width: 220px;"/>
           </el-form-item>
           <el-form-item label="通知时间" prop="noticeTime">
             <el-date-picker
@@ -20,10 +21,13 @@
             />
           </el-form-item>
         </el-form>
+        <div>
+          <el-button type="primary" @click="handlerQuery" style="width: 100px">查询</el-button>
+        </div>
       </div>
     </el-card>
-
-    <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"
+    <!--新增通知-->
+    <el-dialog v-model="dialogFormVisible" title="新增通知" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="notice">
         <el-form-item label="标题" prop="address">
@@ -50,14 +54,15 @@
 <script setup lang="ts">
 import adminNoticeList from "./adminNoticeList.vue";
 
-import { ref, reactive, getCurrentInstance, onMounted } from "vue";
+import {getCurrentInstance, ref} from "vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 const user = context?.$store.state.loginUser;
 let ruleForm = ref({
   noticeTitle: "",
   noticeTime: "",
-  noticeContent: ""
+  noticeContent: "",
+  flag: 0
 });
 let dialogFormVisible = ref(<boolean>false);
 let notice = ref(<{}>{
@@ -92,6 +97,13 @@ const createNotice = () => {
     dialogFormVisible.value = false;
   });
 };
+
+/**
+ * 进行查询
+ */
+const handlerQuery = () => {
+  ruleForm.value.flag += 1;
+}
 
 </script>
 

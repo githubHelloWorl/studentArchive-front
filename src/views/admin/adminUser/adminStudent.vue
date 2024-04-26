@@ -3,28 +3,37 @@
     <el-card class="box-card all" style="margin-bottom: 10px;">
 
       <div>
-        <el-form :model="ruleForm" :inline="true" class="demo-form-inline" style="width: 80%; margin-left: 10%;">
+        <el-form :model="ruleForm" :inline="true" class="demo-form-inline"
+                 style="width: 100%;margin-left: 1%;margin-top: 10px">
           <el-form-item label="学生学号" prop="userAccount">
-            <el-input v-model="ruleForm.userAccount" />
-          </el-form-item>
-          <el-form-item label="身份证号" prop="cardId">
-            <el-input v-model="ruleForm.cardId" />
-          </el-form-item>
-          <el-form-item label="手机号码" prop="phone">
-            <el-input v-model="ruleForm.phone" />
+            <el-input v-model="ruleForm.userAccount" style="width: 200px"/>
           </el-form-item>
           <el-form-item label="学生班级" prop="classes">
-            <el-input v-model="ruleForm.classes" />
+            <el-input v-model="ruleForm.classes" style="width: 200px"/>
+          </el-form-item>
+          <el-form-item label="学生院系" prop="department">
+            <el-input v-model="ruleForm.department" style="width: 200px"/>
+          </el-form-item>
+          <br>
+          <el-form-item label="学生姓名" prop="userName">
+            <el-input v-model="ruleForm.userName" style="width: 200px"/>
+          </el-form-item>
+          <el-form-item label="手机号码" prop="phone">
+            <el-input v-model="ruleForm.phone" style="width: 200px"/>
+          </el-form-item>
+          <el-form-item label="身份证号" prop="cardId">
+            <el-input v-model="ruleForm.cardId" style="width: 200px"/>
           </el-form-item>
         </el-form>
-        <div style="margin: auto;">
+
+        <div style="margin-top: 5px">
           <el-row :gutter="10">
             <el-col :span="8"></el-col>
             <el-col :span="2">
               <el-button @click="archiveQuery" type="primary">查询</el-button>
             </el-col>
             <el-col :span="2">
-              <el-button @click="changeQuery" type="primary">导出</el-button>
+              <el-button @click="changeQuery" type="primary">批量导出</el-button>
             </el-col>
             <el-col :span="2">
               <el-upload
@@ -33,7 +42,7 @@
                 :on-change="handleFileChange"
                 :before-upload="beforeUpload"
               >
-                <el-button slot="trigger" type="primary">导入</el-button>
+                <el-button slot="trigger" type="primary">批量导入</el-button>
               </el-upload>
             </el-col>
             <el-col :span="2">
@@ -51,13 +60,14 @@
 <script setup lang="ts">
 import adminStudentList from "@/views/admin/adminUser/adminStudentList.vue";
 import * as XLSX from "xlsx";
-import { ref, reactive, getCurrentInstance, onMounted } from "vue";
+import {getCurrentInstance, ref} from "vue";
 
+// 修改
 interface student {
   userAccount: string,
   userName: string,
   userRole: string,
-  userPassowrd: string,
+  userPassword: string,
   cardId: string,
   phone: string,
   department: string,
@@ -79,6 +89,7 @@ let ruleForm = ref({
   userRole: "student",
   cardId: null,
   phone: null,
+  department: null,
   classes: "",
   flag: 0
 });
@@ -134,17 +145,6 @@ const readExcel = (file: any) => {
         userName: item[0],
         cardId: item[1],
         phone: item[2],
-        // department: item[3],
-        // classes: item[4],
-        // userPassword: "12345678",
-        // userRole: "student",
-        // archiveId: item[5],
-        // sex: item[6],
-        // address: item[7],
-        // health: item[8],
-        // origin: item[9],
-        // nation: item[10],
-        // createTime: item[11]
       });
     });
 

@@ -111,7 +111,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "HelloWorld",
@@ -121,7 +121,6 @@ export default defineComponent({
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
@@ -132,9 +131,9 @@ ul {
 }
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0 20px;
 }
 a {
-  color: #42b983;
+  color: #ffffff;
 }
 </style>

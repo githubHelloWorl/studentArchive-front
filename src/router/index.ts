@@ -1,8 +1,9 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import { getCurrentInstance } from "vue";
+/**
+ * 系统左侧目录栏
+ * */
+import {createRouter, createWebHistory, RouteRecordRaw} from "vue-router";
 import myRequest from "@/plugins/axios";
-import { ElMessage } from "element-plus";
+import {ElMessage} from "element-plus";
 import store from "@/store/index";
 
 const routes: Array<RouteRecordRaw> = [
@@ -17,6 +18,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/login/register.vue")
   },
   {
+    /**
+     *  学生端
+     */
     path: "/student",
     name: "student",
     component: () => import("@/views/student/index.vue"),
@@ -28,19 +32,19 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "/teacherNotice",
-            name: "通知信息",
+            name: "通知信息 ",
             component: () => import("@/views/teacher/teacherNotice/teacherNotice.vue")
           }
         ]
       },
       {
         path: "/studentAr",
-        name: "学生-档案",
+        name: "学生档案 ",
         component: () => import("@/views/student/home.vue"),
         children: [
           {
             path: "/studentArchive2",
-            name: "学生-档案",
+            name: "学生档案 ",
             component: () => import("@/views/student/studentArchive1/studentArchive.vue")
           }
         ]
@@ -52,12 +56,12 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "/studentPunish1",
-            name: "惩罚 信息",
+            name: "处罚信息 ",
             component: () => import("@/views/student/studentPR/studentPunish2.vue")
           },
           {
             path: "/studentReward4",
-            name: "证书 信息",
+            name: "证书信息 ",
             component: () => import("@/views/student/studentPR/studentReward3.vue")
           }
         ]
@@ -65,6 +69,9 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
+    /**
+     *  教师端
+     */
     path: "/teacher",
     name: "teacher",
     component: () => import("@/views/teacher/index.vue"),
@@ -100,14 +107,14 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "/teacherArchive",
-            name: "学生 档案",
+            name: " 学生档案",
             component: () => import("@/views/teacher/teacherArchive/teacherArchive.vue")
           }
         ]
       },
       {
         path: "/teacherRP1",
-        name: "学生惩奖管理",
+        name: "学生奖惩管理",
         component: () => import("@/views/teacher/home.vue"),
         children: [
           {
@@ -125,6 +132,9 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
+    /**
+     *  管理员端
+     */
     path: "/admin",
     name: "admin",
     component: () => import("@/views/admin/index.vue"),
@@ -158,18 +168,18 @@ const routes: Array<RouteRecordRaw> = [
           }
         ]
       },
-      {
-        path: "/adminArchive",
-        name: "档案管理",
-        component: () => import("@/views/admin/home.vue"),
-        children: [
-          {
-            path: "/adminArchive",
-            name: "学生档案",
-            component: () => import("@/views/admin/adminArchive/adminArchive.vue")
-          }
-        ]
-      },
+      // {
+      //   path: "/adminArchive",
+      //   name: "档案管理",
+      //   component: () => import("@/views/admin/home.vue"),
+      //   children: [
+      //     {
+      //       path: "/adminArchive",
+      //       name: "学生档案",
+      //       component: () => import("@/views/admin/adminArchive/adminArchive.vue")
+      //     }
+      //   ]
+      // },
       {
         path: "/adminRP",
         name: "惩奖管理",
@@ -230,9 +240,11 @@ router.beforeEach((to, from, next) => {
   }).then((res: any) => {
     console.log(res);
     if (res.data.data === null) {
-      ElMessage({ type: "error", message: "未登录,请重新登录" });
-      store.dispatch(("logout"));
-      next({ path: "/" });
+      if (to.path !== "/register") {
+        ElMessage({type: "error", message: "未登录,请重新登录"});
+        store.dispatch(("logout"));
+        next({path: "/"});
+      }
     } else {
       // ElMessage({ type: "success", message: "登录" });
     }

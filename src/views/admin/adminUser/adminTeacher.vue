@@ -3,21 +3,19 @@
     <el-card class="box-card all" style="margin-bottom: 10px;">
 
       <div>
-        <el-form :model="ruleForm" :inline="true" class="demo-form-inline" style="width: 80%;margin-left: 10%;">
+        <el-form :model="ruleForm" :inline="true" class="demo-form-inline"
+                 style="width: 100%; margin-top:10px; margin-left: 1%">
           <el-form-item label="教师工号" prop="userAccount">
-            <el-input v-model="ruleForm.userAccount" />
+            <el-input v-model="ruleForm.userAccount" style="width: 200px"/>
           </el-form-item>
-<!--          <el-form-item label="教师姓名" prop="userName">-->
-<!--            <el-input v-model="ruleForm.userName" />-->
-<!--          </el-form-item>-->
-          <el-form-item label="身份证号" prop="cardId">
-            <el-input v-model="ruleForm.cardId" />
+          <el-form-item label="教师姓名" prop="userName">
+            <el-input v-model="ruleForm.userName" style="width: 200px"/>
           </el-form-item>
           <el-form-item label="手机号码" prop="phone">
-            <el-input v-model="ruleForm.phone" />
+            <el-input v-model="ruleForm.phone" style="width: 200px"/>
           </el-form-item>
-          <el-form-item label="学生班级" prop="classes">
-            <el-input v-model="ruleForm.classes" />
+          <el-form-item label="身份证号" prop="cardId">
+            <el-input v-model="ruleForm.cardId" style="width: 200px"/>
           </el-form-item>
         </el-form>
         <div style="margin: auto;">
@@ -33,7 +31,7 @@
 <script setup lang="ts">
 import adminTeacherList from "@/views/admin/adminUser/adminTeacherList.vue";
 
-import { ref, reactive, getCurrentInstance, onMounted } from "vue";
+import {getCurrentInstance, ref} from "vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 const user = context?.$store.state.loginUser;
@@ -63,7 +61,6 @@ const changeQuery = () => {
 const archiveQuery = () => {
   ruleForm.value.flag += 1;
 };
-
 
 </script>
 

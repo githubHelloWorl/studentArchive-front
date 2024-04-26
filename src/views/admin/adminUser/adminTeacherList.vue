@@ -1,20 +1,20 @@
 <template>
   <div>
     <el-card class="box-card all">
-      <el-table :data="tableData" border stripe style="width: 100%;" @select="onSelect">
-<!--        <el-table-column type="selection" width="55" />-->
-        <el-table-column prop="userAccount" label="工号" width="120" />
-        <el-table-column prop="userName" label="姓名" width="80" />
-        <el-table-column prop="cardId" label="身份证号" width="180" />
-        <el-table-column prop="phone" label="手机号码" width="120" />
-        <el-table-column prop="department" label="院系" width="180" />
-        <el-table-column prop="job" label="职务" width="100" />
-        <el-table-column prop="duty" label="职称" width="100" />
-        <el-table-column prop="unity" label="单位" width="100" />
-        <el-table-column label="操作" width="150" fixed="right">
+      <el-table :data="tableData" border stripe style="width: 94%; margin-left: 3%" @select="onSelect">
+        <!--        <el-table-column type="selection" width="50" />-->
+        <el-table-column prop="userAccount" label="工号" width="109" align="center"/>
+        <el-table-column prop="userName" label="姓名" width="100" align="center"/>
+        <el-table-column prop="phone" label="手机号" width="120" align="center"/>
+        <el-table-column prop="cardId" label="身份证号" width="180" align="center"/>
+        <el-table-column prop="department" label="院系" width="180" align="center"/>
+        <el-table-column prop="job" label="职务" width="100" align="center"/>
+        <el-table-column prop="duty" label="职称" width="100" align="center"/>
+        <el-table-column prop="unity" label="单位" width="100" align="center"/>
+        <el-table-column label="操作" fixed="right" align="center">
           <template #default="scope">
-            <el-button type="primary" @click="handleClick(scope.row)">修改
-            </el-button>
+<!--            <el-button type="primary" style="width: 80px;" @click="handleClick(scope.row)">修改-->
+<!--            </el-button>-->
             <el-popconfirm
               title="确定删除?"
               @confirm="deleteUser(scope.row)"
@@ -28,7 +28,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
-        style="margin-top: 20px;"
+          style="margin-top: 20px;margin-left: 3%"
         background
         layout="prev, pager, next"
         :total="total"
@@ -38,11 +38,10 @@
       </el-pagination>
     </el-card>
 
-
     <!--    <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"-->
     <!--               style="max-width: 600px;">-->
     <!--      <el-form :model="teacher" :inline="true">-->
-    <!--        <el-form-item label="学号" prop="archiveId">-->
+    <!--        <el-form-item label="工号" prop="archiveId">-->
     <!--          <el-input v-model="teacher.userAccount" size="large" :width="100" disabled />-->
     <!--        </el-form-item>-->
     <!--        <el-form-item label="密码" prop="address">-->
@@ -62,7 +61,7 @@
     <!--      </template>-->
     <!--    </el-dialog>-->
 
-    <el-dialog v-model="dialogFormVisible" title="修改个人信息" label-position="left" label-width="auto"
+    <el-dialog v-model="dialogFormVisible" title="修改教师信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="user1" label-width="auto">
         <el-form-item label="工号" prop="userAccount">
@@ -74,9 +73,6 @@
         <el-form-item label="院系" prop="department">
           <el-input v-model="user1.department" placeholder="请输入院系" size="default" />
         </el-form-item>
-        <!--        <el-form-item label="班级" prop="classes">-->
-        <!--          <el-input v-model="user1.classes" placeholder="请输入班级" size="default" />-->
-        <!--        </el-form-item>-->
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="user1.phone" placeholder="请输入手机号" size="default" />
         </el-form-item>
@@ -104,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, getCurrentInstance, onMounted, watch, toRef } from "vue";
+import {getCurrentInstance, ref, watch} from "vue";
 
 export default {
   props: ["ruleForm", "query"],
@@ -191,7 +187,6 @@ export default {
         data: form.value
       }).then(function(res: { data: { code: number; data: []; message: String; }; }) {
         if (res.data.code === 0) {
-
           // 分页
           tmpList.value.splice(0);
           tmpList.value.push(...(res.data.data as []));

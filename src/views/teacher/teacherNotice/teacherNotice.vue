@@ -14,52 +14,53 @@
           />
         </el-form-item>
       </el-form>
+      <div><el-button type="primary" @click="handlerQuery">查询</el-button></div>
     </el-card>
 
-    <el-dialog v-model="dialogFormVisible1" title="通知" label-position="left" label-width="auto"
-               style="max-width: 600px;">
-      <el-table :data="tableData" border stripe style="width: 100%;;max-height: 200px;overflow: auto;">
-        <el-table-column prop="createTime" label="时间" width="180">
-          <template #default="scope">
-            <el-date-picker
-              v-model="scope.row.noticeTime"
-              type="date"
-              :disabled="true"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="noticeTitle" label="标题" width="180" />
-        <el-table-column label="操作" width="180">
-          <template #default="scope">
-            <el-popover
-              placement="bottom"
-              title=""
-              :width="200"
-              trigger="click"
-            >
-              <template #reference>
-                <el-button type="text">点击查看</el-button>
-              </template>
-              <template #default>
-                <div style="margin-top: 20px;">
-                  <p>
-                    {{ scope.row.noticeContent }}
-                  </p>
-                </div>
-              </template>
-            </el-popover>
-          </template>
-        </el-table-column>
-      </el-table>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="dialogFormVisible1 = false">确认</el-button>
-          <!--          <el-button type="primary" @click="updatePass">-->
-          <!--            修改-->
-          <!--          </el-button>-->
-        </div>
-      </template>
-    </el-dialog>
+<!--    <el-dialog v-model="dialogFormVisible1" title="通知" label-position="left" label-width="auto"-->
+<!--               style="max-width: 600px;">-->
+<!--      <el-table :data="tableData" border stripe style="width: 100%;;max-height: 200px;overflow: auto;">-->
+<!--        <el-table-column prop="createTime" label="时间" width="180">-->
+<!--          <template #default="scope">-->
+<!--            <el-date-picker-->
+<!--              v-model="scope.row.noticeTime"-->
+<!--              type="date"-->
+<!--              :disabled="true"-->
+<!--            />-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column prop="noticeTitle" label="标题" width="180" />-->
+<!--        <el-table-column label="操作" width="180">-->
+<!--          <template #default="scope">-->
+<!--            <el-popover-->
+<!--              placement="bottom"-->
+<!--              title=""-->
+<!--              :width="200"-->
+<!--              trigger="click"-->
+<!--            >-->
+<!--              <template #reference>-->
+<!--                <el-button type="text">点击查看</el-button>-->
+<!--              </template>-->
+<!--              <template #default>-->
+<!--                <div style="margin-top: 20px;">-->
+<!--                  <p>-->
+<!--                    {{ scope.row.noticeContent }}-->
+<!--                  </p>-->
+<!--                </div>-->
+<!--              </template>-->
+<!--            </el-popover>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--      </el-table>-->
+<!--      <template #footer>-->
+<!--        <div class="dialog-footer">-->
+<!--          <el-button @click="dialogFormVisible1 = false">确认</el-button>-->
+<!--          &lt;!&ndash;          <el-button type="primary" @click="updatePass">&ndash;&gt;-->
+<!--          &lt;!&ndash;            修改&ndash;&gt;-->
+<!--          &lt;!&ndash;          </el-button>&ndash;&gt;-->
+<!--        </div>-->
+<!--      </template>-->
+<!--    </el-dialog>-->
 
     <teacher-notice-list :rule-form="ruleForm"></teacher-notice-list>
   </div>
@@ -73,9 +74,13 @@ const context = getCurrentInstance()?.appContext.config.globalProperties;
 let dialogFormVisible1 = ref(<boolean>false);
 const ruleForm = ref(<{}>{
   noticeTime: "",
-  noticeTitle: ""
+  noticeTitle: "",
+  flag: 0
 });
 
+const handlerQuery = () => {
+  ruleForm.value.flag += 1;
+}
 
 </script>
 

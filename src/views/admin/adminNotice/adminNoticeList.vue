@@ -1,26 +1,21 @@
 <template>
   <div>
     <el-card class="box-card all">
-      <el-table :data="tableData" border stripe style="width: 80%;margin-left: 10%;" >
-        <!--          <el-table-column prop="id" ></el-table-column>-->
-        <el-table-column prop="createTime" label="时间" width="300">
+      <el-table :data="tableData" border stripe style="width: 80%;margin-left: 10%;">
+        <el-table-column prop="createTime" label="时间" width="200px" align="center">
           <template #default="scope">
             {{ new Date(scope.row.noticeTime).toLocaleDateString() }}
-            <!--            <el-date-picker-->
-            <!--              v-model="scope.row.noticeTime"-->
-            <!--              type="date"-->
-            <!--              :disabled="true"-->
-            <!--            />-->
           </template>
         </el-table-column>
-        <el-table-column prop="noticeTitle" label="标题" width="400" />
-        <el-table-column label="操作" width="400">
+        <el-table-column prop="noticeTitle" label="标题" width="600px" align="center"/>
+        <el-table-column label="操作" align="center">
           <template #default="scope">
             <el-button type="primary" @click="handleClick(scope.row)">查看
             </el-button>
           </template>
         </el-table-column>
       </el-table>
+      <!--     分页    -->
       <el-pagination
         style="margin: 20px 0 0 10%;"
         background
@@ -31,12 +26,12 @@
       >
       </el-pagination>
     </el-card>
-
-    <el-dialog v-model="dialogFormVisible" title="修改档案信息" label-position="left" label-width="auto"
+    <!--修改通知-->
+    <el-dialog v-model="dialogFormVisible" title="修改通知" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="notice" :inline="false">
         <el-form-item label="标题" prop="noticeTitle">
-          <el-input type="text" v-model="notice.noticeTitle" size="large" :width="100" disabled />
+          <el-input type="text" v-model="notice.noticeTitle" size="large" :width="100"/>
         </el-form-item>
         <el-form-item label="内容" prop="noticeContent">
           <el-input v-model="notice.noticeContent" type="textarea" :width="100" />
@@ -60,18 +55,15 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, getCurrentInstance, onMounted, watch, toRef } from "vue";
+import {getCurrentInstance, ref, watch} from "vue";
 
 export default {
   props: ["ruleForm"],
   setup(props: any, content: any) {
 
     const context = getCurrentInstance()?.appContext.config.globalProperties;
-    // const user = context?.$store.state.loginUser;
     const user = JSON.parse(localStorage.getItem("loginUser") as string);
-    // let archive: {} = reactive(<{}>{});
     let notice = ref(<{}>{});
-    // let archive = {};
     let form = ref({});
     let dialogFormVisible = ref(false);
     let tmpList = ref([]);
@@ -112,8 +104,6 @@ export default {
           tmpList.value.splice(0);
           tmpList.value.push(...(res.data.data as []));
           total.value = res.data.data.length;
-          // console.log("total = ")
-          // console.log(total)
           let start = 0,
             end = pageSize.value;
           let length = tmpList.value.length;
@@ -130,10 +120,16 @@ export default {
       });
     };
     watch(props.ruleForm, async (newValue, oldValue) => {
+      console.log(props.ruleForm)
+      if(props.ruleForm.flag <= 0){
+        return;
+      }
+
+      props.ruleForm.flag = 0;
 
       await getTable();
 
-    }, { immediate: true, deep: true });
+    }, { immediate: false, deep: true });
 
     /**
      * 点击

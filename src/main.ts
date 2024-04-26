@@ -11,5 +11,6 @@ const app = createApp(App);
 
 app.config.globalProperties.$myRequest = myRequest;
 app.config.globalProperties.$message = ElMessage;
+app.config.globalProperties.$baseUrl = process.env.VUE_APP_BASEURL
 
 app.use(ElementPlus).use(store).use(router).mount("#app");

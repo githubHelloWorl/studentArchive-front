@@ -1,17 +1,36 @@
+<!--注册-->
 <template>
   <div>
     <div class="login_view">
-      <el-card style="height: 450px;width: 500px; border-radius: 5%;">
-        <el-form :model="loginForm" class="login_form" style="border: solid 0px red;"
-                 label-width="auto" label-position="right">
+      <el-card style="height: 450px; width: 500px; border-radius: 5%;">
+        <el-form
+            :model="loginForm"
+            class="login_form"
+            label-position="right"
+            label-width="auto"
+            style="border: solid 0px red"
+        >
           <el-form-item prop="userAccount" label="账号">
-            <el-input v-model="loginForm.userAccount" placeholder="请输入账号" />
+            <el-input
+                v-model="loginForm.userAccount"
+                placeholder="请输入账号"
+            />
           </el-form-item>
           <el-form-item prop="userPassword" label="密码">
-            <el-input v-model="loginForm.userPassword" type="password" placeholder="请输入密码" show-password />
+            <el-input
+                v-model="loginForm.userPassword"
+                placeholder="请输入密码"
+                show-password
+                type="password"
+            />
           </el-form-item>
           <el-form-item prop="checkRePassword" label="确认密码">
-            <el-input v-model="loginForm.checkRePassword" type="password" placeholder="请输入确认密码" show-password />
+            <el-input
+                v-model="loginForm.checkRePassword"
+                placeholder="请输入确认密码"
+                show-password
+                type="password"
+            />
           </el-form-item>
           <el-form-item prop="userName" label="姓名">
             <el-input v-model="loginForm.userName" placeholder="请输入姓名" />
@@ -29,7 +48,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item>
-            <el-space :size="10" style="margin: auto;">
+            <el-space :size="45" style="margin: auto;">
               <el-button class="login" type="success" @click="handleRegister">注册</el-button>
               <el-button class="login" type="success" @click="toLogin">返回</el-button>
             </el-space>
@@ -41,13 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  reactive,
-  ref,
-  getCurrentInstance,
-  onMounted,
-  computed
-} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 
 const aaa = () => {
 };
@@ -117,10 +130,6 @@ const selectClass = () => {
 };
 
 /**
- * 蒋婷
- */
-
-/**
  * 初始化
  */
 onMounted(() => {
@@ -133,7 +142,6 @@ onMounted(() => {
     Object.keys(res.data.data).forEach((item, index) => {
       myD.push({ label: item, value: item });
     });
-
     myDC = res.data.data;
   });
 });
@@ -141,44 +149,37 @@ onMounted(() => {
 
 <style scoped>
 .login_view {
-  background-repeat: no-repeat;
   flex-direction: column;
-  background-size: cover;
-  background: url("@/assets/background.png");
   display: flex;
   width: 100%;
   min-height: 100vh;
   justify-content: center;
   align-items: center;
   position: relative;
-  background-position: center center;
-  /* 表单盒子 */
-
-  .login_form {
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, .5);
-    /*padding: 30px 100px;*/
-    background: #fff;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
+  background: url("@/assets/background6.png");
+  background-size: cover;
 }
 
 .login {
-  border: 0;
+  border-radius: 15px;
   cursor: pointer;
-  padding: 0 24px;
-  margin: auto;
+  padding: 0 25px;
   outline: none;
   color: #fff;
-  background: rgba(24, 140, 145, 1);
+  background: rgb(29, 159, 164);
   font-weight: bold;
-  width: 80px;
+  width: 150px;
   font-size: 18px;
-  height: 33px;
+  height: 40px;
+}
+
+.login_form {
+  border-radius: 50px;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 20px;
 }
 </style>

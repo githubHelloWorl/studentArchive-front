@@ -1,45 +1,43 @@
+<!--教师档案-->
 <template>
   <div>
     <el-card class="box-card all">
       <template #header>
         <div class="card-header">
-          <span style="font-family: 隶书;font-size: 24px;text-align: center;">档案资料</span>
+          <span style="font-family: 隶书;font-size: 35px;text-align: center;">档案信息</span>
           <el-button class="button" type="text" @click="dialogFormVisible = true"
-                     style="float: right;margin-right: 0px;"
+                     style="float: right;margin-right: 40px;"
           >修改信息
           </el-button>
         </div>
       </template>
       <div>
-        <el-descriptions title="" direction="vertical" :column="3" border>
-          <el-descriptions-item label="教师工号"
+        <el-descriptions title="" direction="vertical" :column="2" border style="width: 94%;margin-left: 3%">
+          <el-descriptions-item label="工号" width="50%" align="center"
           >{{ user.userAccount }}
           </el-descriptions-item>
-          <el-descriptions-item label="姓名"
+          <el-descriptions-item label="姓名" width="50%" align="center"
           >{{ user1.userName }}
           </el-descriptions-item>
-          <el-descriptions-item label="手机号"
+          <el-descriptions-item label="手机号" width="50%" align="center"
           >{{ user1.phone }}
           </el-descriptions-item>
-          <el-descriptions-item label="身份证号"
+          <el-descriptions-item label="身份证号" width="50%" align="center"
           >{{ user1.cardId }}
           </el-descriptions-item>
-          <el-descriptions-item label="所属院系"
+          <el-descriptions-item label="所属院系" width="50%" align="center"
           >{{ user1.department }}
           </el-descriptions-item>
-          <!--          <el-descriptions-item label="专业"-->
-          <!--          >{{ user.classes }}-->
-          <!--          </el-descriptions-item>-->
-          <el-descriptions-item label="职务"
+          <el-descriptions-item label="职务" width="50%" align="center"
           >{{ user1.job }}
           </el-descriptions-item>
-          <el-descriptions-item label="职称"
+          <el-descriptions-item label="职称" width="50%" align="center"
           >{{ user1.duty }}
           </el-descriptions-item>
-          <el-descriptions-item label="单位"
+          <el-descriptions-item label="单位" width="50%" align="center"
           >{{ user1.unity }}
           </el-descriptions-item>
-          <el-descriptions-item label="角色"
+          <el-descriptions-item label="用户角色" align="center"
           ><span v-if="user1.userRole === 'student'">学生</span>
             <span v-else>教师</span>
           </el-descriptions-item>
@@ -50,25 +48,28 @@
     <el-dialog v-model="dialogFormVisible" title="修改个人信息" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="user2" label-width="auto">
-        <el-form-item label="教师工号" prop="userAccount">
+        <el-form-item label="工号 :" prop="userAccount">
           {{ user2.userAccount }}
         </el-form-item>
-        <el-form-item label="姓名" prop="userName">
+        <el-form-item label="姓名 :" prop="userName">
           {{ user2.userName }}
         </el-form-item>
-        <el-form-item label="手机号" prop="phone">
+        <el-form-item label="身份证号 :" prop="cardId">
+          {{ user2.cardId }}
+        </el-form-item>
+        <el-form-item label="手机号 :" prop="phone">
           <el-input v-model="user2.phone" placeholder="请输入手机号" size="default" />
         </el-form-item>
-        <el-form-item label="院系" prop="department">
+        <el-form-item label="院系 :" prop="department">
           <el-input v-model="user2.department" placeholder="请输入院系" size="default" />
         </el-form-item>
-        <el-form-item label="职务" prop="job">
+        <el-form-item label="职务 :" prop="job">
           <el-input v-model="user2.job" placeholder="请输入职务" size="default" />
         </el-form-item>
-        <el-form-item label="职称" prop="duty">
+        <el-form-item label="职称 :" prop="duty">
           <el-input v-model="user2.duty" placeholder="请输入职称" size="default" />
         </el-form-item>
-        <el-form-item label="单位" prop="unity">
+        <el-form-item label="单位 :" prop="unity">
           <el-input v-model="user2.unity" placeholder="请输入单位" size="default" />
         </el-form-item>
       </el-form>
@@ -85,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, getCurrentInstance, computed } from "vue";
+import {getCurrentInstance, ref} from "vue";
 
 const instance = getCurrentInstance();
 
@@ -145,7 +146,6 @@ const updateUser = () => {
     dialogFormVisible.value = false;
   });
 };
-
 
 </script>
 

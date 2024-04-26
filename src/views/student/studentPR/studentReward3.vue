@@ -1,7 +1,8 @@
+<!--获奖信息-->
 <template>
   <div>
     <el-card class="box-card all" style="margin-bottom: 10px;">
-      <el-button class="button" type="primary" @click="handlerCreate"
+      <el-button class="button" type="primary" @click="handlerCreate" style="height: 40px"
       >新增证书
         <el-icon style="margin-right: 5px;">
           <DocumentAdd />
@@ -11,39 +12,38 @@
 
     <!-- 表格信息 -->
     <el-card class="box-card all">
-      <el-table :data="tableData" border stripe style="width: 100%;">
-        <el-table-column prop="fileId" label="证书编号" width="150" />
-        <el-table-column prop="submitTime" label="上传时间" width="100">
+      <el-table :data="tableData" border stripe style="width: 94%;margin-left: 3%">
+        <el-table-column prop="fileId" label="证书编号" width="170" align="center"/>
+        <el-table-column prop="fileName" label="证书名称" width="130" align="center"/>
+        <el-table-column prop="submitTime" label="上传时间" width="100" align="center">
           <template #default="scope">
             {{ new Date(scope.row.submitTime).toLocaleDateString() }}
           </template>
         </el-table-column>
-        <el-table-column prop="stime" label="学期" width="80" />
-        <el-table-column prop="fileName" label="证书名称" width="120" />
-        <el-table-column prop="fileUnit" label="颁发单位" width="120" />
-        <el-table-column prop="fileTime" label="颁发时间" width="120">
+        <el-table-column prop="stime" label="学年学期" width="90" align="center"/>
+        <el-table-column prop="fileUnit" label="颁发单位" width="180" align="center"/>
+        <el-table-column prop="fileTime" label="颁发日期" width="100" align="center">
           <template #default="scope">
             {{ new Date(scope.row.fileTime).toLocaleDateString() }}
           </template>
         </el-table-column>
-        <el-table-column prop="tname" label="审核教师" width="120" />
-        <el-table-column prop="checkTime" label="审核时间" width="120">
+        <el-table-column prop="tname" label="审核教师" width="100" align="center"/>
+        <el-table-column prop="checkTime" label="审核时间" width="100" align="center">
           <template #default="scope">
             <span v-if="scope.row.checkTime !== null">{{ new Date(scope.row.checkTime).toLocaleDateString() }}</span>
           </template>
         </el-table-column>
-
-        <el-table-column label="状态" fixed="right">
+        <el-table-column label="审核状态" fixed="right" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.state === '0'" type="danger" effect="dark">未审核</el-tag>
             <el-tag v-else-if="scope.row.state === '1'" type="info" effect="dark">不通过</el-tag>
             <el-tag v-else-if="scope.row.state === '2'" type="success" effect="dark">审核通过</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column label="操作" width="120" fixed="right" align="center">
           <template #default="scope">
-            <el-button type="success" @click="handlerFind(scope.row)">查看</el-button>
-            <!--            <el-button type="primary" @click="openPdf = true">查看证书</el-button>-->
+            <el-button type="success" @click="handlerFind(scope.row)" style="width: 70px">查看</el-button>
+            <!--                        <el-button type="primary" @click="openPdf = true">查看证书</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -53,50 +53,52 @@
     <el-dialog v-model="dialogFormVisible" :title="title" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="reward">
-        <el-form-item v-if="title === '查看证书'" label="证书编号" prop="address">
-          <el-input v-model="reward.fileId" placeholder="请输入" size="large" :width="100" disabled />
+        <el-form-item v-if="title === '查看证书'" label="证书编号 :" prop="address">
+          <el-input v-model="reward.fileId" placeholder="" size="large" :width="100" disabled/>
         </el-form-item>
-        <el-form-item label="证书名称" prop="address">
+        <el-form-item label="证书名称 :" prop="address">
           <el-input v-model="reward.fileName" placeholder="请输入证书名称" size="large" :width="100" />
         </el-form-item>
-        <el-form-item label="颁发单位" prop="fileUnit">
+        <el-form-item label="颁发单位 :" prop="fileUnit">
           <el-input v-model="reward.fileUnit" placeholder="请输入颁发单位" size="large" :width="100" />
         </el-form-item>
-        <el-form-item label="颁发时间" prop="fileTime">
+        <el-form-item label="颁发日期 :" prop="fileTime">
           <el-date-picker
-            v-model="reward.fileTime"
-            type="date"
-            placeholder="请输入颁发时间"
-            size="default"
+              v-model="reward.fileTime" type="date" placeholder="请输入颁发时间" size="default"
           />
         </el-form-item>
-        <el-form-item label="学年学期" prop="stime">
+        <el-form-item label="学年学期 :" prop="stime">
           <el-input v-model="reward.stime" placeholder="请输入学年学期" size="large" :width="100" />
+        </el-form-item>
+        <el-form-item label="证书 :" v-if="title === '查看证书'">
+          <el-image
+              v-if="reward.filePath"
+              style="width: 300px; height: 300px"
+              :src="imageUrl"
+              fit="contain">
+          </el-image>
         </el-form-item>
         <el-form-item label="上传图片" prop="image">
           <el-upload
-            class="avatar-uploader"
-            action="/api/archive/img"
-            :draggable="true"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
+              class="avatar-uploader"
+              action="/api/user/getDC"
+              list-type="text"
+              :show-file-list="true"
+              :on-change="handlerChangeFile"
+              :before-upload="beforeAvatarUpload"
+              v-model:file-list="fileList"
           >
-            <img v-if="reward.filePath" :src="reward.filePath" class="avatar"
-                 style="max-height: 200px; max-width: 200px;" />
-            <el-icon v-else class="avatar-uploader-icon">
-              <Plus />
-            </el-icon>
+            <el-button type="primary">点击上传</el-button>
+            <template #tip>
+              <div> 请上传jpg/png格式，大小不能超过2MB!</div>
+            </template>
           </el-upload>
-          <span v-if="title === '新建证书'">证书大小不能超过 2MB!</span>
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button v-if="title === '新建证书'" @click="dialogFormVisible = false">取消</el-button>
-          <el-button v-if="title === '新建证书'" type="primary" @click="handlerCreateReward">
-            创建
-          </el-button>
+          <el-button v-if="title === '新建证书'" type="primary" @click="handlerCreateReward">创建</el-button>
           <el-button v-if="title === '查看证书'" @click="handlerDeleteReward" :disabled="reward.state === '2'">撤回
           </el-button>
           <el-button v-if="title === '查看证书'" type="primary" @click="handlerUpdateReward"
@@ -109,14 +111,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, getCurrentInstance, onMounted } from "vue";
-import { DocumentAdd, Plus } from "@element-plus/icons-vue";
-import type { UploadProps, UploadFile } from "element-plus";
+import {getCurrentInstance, onMounted, ref} from "vue";
+import {DocumentAdd} from "@element-plus/icons-vue";
+import type { UploadProps,UploadUserFile } from "element-plus";
 
-const imageUrl = ref("");
-const aaa = ref<string>("aaa.jpg");
 const context = getCurrentInstance()?.appContext.config.globalProperties;
-// const user = context?.$store.state.loginUser;
 const user = JSON.parse(localStorage.getItem("loginUser") as string);
 let ruleForm = ref({
   title: ""
@@ -154,50 +153,12 @@ let tableData = ref(<[]>[]);
 let openPdf = ref(<boolean>false);
 let title = ref("");
 let loading = ref<string>("2");
-
-// 关闭弹窗
-const onClose = () => {
-  openPdf.value = false;
-};
-
-/**
- * 上传图片
- * @param file
- */
-// const upload = (file: any) => {
-//   loading.value = "1";
-//   let data = new FormData();
-//   data.append("image", file.file);
-//
-//   context?.$myRequest({
-//     url: "/api/archive/img",
-//     method: "POST",
-//     headers: { "Content-Type": "multipart/form-data" },
-//     data: file
-//   }).then(async function(res: any) {
-//     if (res.data.code === 0) {
-//       context?.$message({
-//         type: "success",
-//         message: "图片上传成功"
-//       });
-//       reward.value.filePath = res.data.data;
-//       console.log(reward.value.filePath);
-//
-//       setTimeout(() => {
-//         loading.value = "0";
-//       }, 2000);
-//     } else {
-//       context?.$message({
-//         type: "error",
-//         message: res.data.message
-//       });
-//     }
-//   });
-// };
+const imageUrl = ref("");
+const fileList = ref<UploadUserFile[]>([]);
 
 const beforeAvatarUpload: UploadProps["beforeUpload"] = (file) => {
-  if (file.type !== "image/jpeg") {
-    context?.$message.error("必须是JPG格式!");
+  if (!["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
+    context?.$message.error("必须是JPG/PNG格式!");
     return false;
   }
   if (file.size / 1024 / 1024 > 2) {
@@ -206,35 +167,6 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (file) => {
   }
   return true;
 };
-
-//图片上传成功的钩子
-const handleAvatarSuccess: UploadProps["onSuccess"] = (response: any, uploadFile: UploadFile) => {
-  //图片上传成功,清除掉对应图片校验结果
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!);
-  console.log(imageUrl.value);
-  console.log("uploadFile =");
-  console.log(uploadFile);
-  context?.$message({ type: "success", message: "图片上传成功" });
-  reward.value.filePath = imageUrl.value;
-  // loading.value = "0";
-};
-//上传图片组件->上传图片之前触发的钩子函数
-// const beforeAvatarUpload: UploadProps['beforeUpload'] = async (rawFile: any) => {
-//   //请求上传文件的接口
-//   // let res = await reqUpload(rawFile)
-//   //将接口的地址赋值给表单并呈现
-//   // chargeForm.imageUrl = res.data.url
-//   //上传图片格式和大小要求  png|jpg  4M
-//   if (rawFile.type !== 'image/png' || rawFile.type == 'image/jpg') {
-//     ElMessage.error('上传文件格式务必PNG|JPG')
-//     return false
-//   } else if (rawFile.size / 1024 / 1024 > 4) {
-//     ElMessage.error('上传文件大小小于4M')
-//     return false
-//   }
-//   // 取消默认的上传请求
-//   return false
-// };
 
 /**
  * 得到图片
@@ -255,10 +187,16 @@ const getImg = () => {
  * 更改证书
  */
 const handlerUpdateReward = () => {
+  let formData = new FormData();
+  formData.append("PR", JSON.stringify((reward as any).value));
+  if (fileList.value.length > 0) {
+    formData.append("file", fileList.value.at(0).raw);
+  }
+
   context?.$myRequest({
     url: "/api/PR/updatePR",
     method: "POST",
-    data: reward.value
+    data: formData
   }).then(async function(res: any) {
     if (res.data.code === 0) {
       context?.$message({
@@ -266,9 +204,6 @@ const handlerUpdateReward = () => {
         message: "修改成功"
       });
       getTable();
-
-      // reward.value = { ...reward2.value };
-
     } else {
       context?.$message({
         type: "error",
@@ -320,9 +255,25 @@ const handlerCreate = () => {
  */
 const handlerFind = (row: {}) => {
   reward.value = row;
-  console.log(reward.value);
   title.value = "查看证书";
-  loading.value = "0";
+  let image = reward.value.filePath;
+  // if (image === null || image === "") {
+  //   image = "error.png";
+  // } else {
+  //   imageUrl.value = require("@/assets/image/" + image);
+  // }
+
+  //
+  if(image){
+    try{
+      imageUrl.value = require("@/assets/image/" + image);
+    }catch(e){
+      console.log("e =")
+      console.log(e)
+      imageUrl.value = require("@/assets/image/error.png")
+    }
+  }
+
   dialogFormVisible.value = true;
 };
 
@@ -332,10 +283,16 @@ const handlerFind = (row: {}) => {
 const handlerCreateReward = () => {
   (reward as any).value.sid = user.userAccount;
 
+  let formData = new FormData();
+  formData.append("reward", JSON.stringify((reward as any).value));
+  if (fileList.value.length > 0) {
+    formData.append("file", fileList.value.at(0).raw);
+  }
+
   context?.$myRequest({
     url: "/api/PR/createPR",
     method: "POST",
-    data: reward.value
+    data: formData
   }).then(async function(res: any) {
     if (res.data.code === 0) {
       context?.$message({
@@ -356,30 +313,13 @@ const handlerCreateReward = () => {
 };
 
 /**
- * 得到教师
+ * 得到证书
  */
-// const handlerGetTeacher = () => {
-//   context?.$myRequest({
-//     url: "/api/user/queryUserByRole?userRole=teacher",
-//     method: "GET"
-//   }).then(function(res: any) {
-//     if (res.data.code === 0) {
-//       // context?.$message({
-//       //   type: "success",
-//       //   message: "档案修改成功"
-//       // });
-//
-//       teacherList.splice(0);
-//       teacherList.push(...res.data.data);
-//
-//     } else {
-//       context?.$message({
-//         type: "error",
-//         message: res.data.message
-//       });
-//     }
-//   });
-// };
+const handlerChangeFile = (fileData: any) => {
+  fileList.value.splice(0);
+  fileList.value.push(fileData);
+};
+
 
 /**
  * 得到证书表格
@@ -407,9 +347,6 @@ const getTable = () => {
         });
       });
 
-      // console.log("res.data.data = ");
-      // console.log(res.data.data);
-
       tableData.value.splice(0);
       tableData.value.push(...(res.data.data as []));
 
@@ -433,7 +370,6 @@ onMounted(async () => {
 <style scoped>
 .button {
   width: 200px;
-
 }
 
 .avatar-uploader {

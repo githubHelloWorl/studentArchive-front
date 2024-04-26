@@ -1,13 +1,14 @@
+<!--头像栏-->
 <template>
   <div>
     <el-card
-      style="width: 100%;margin-bottom: 10px; height: 84px;background-color: #293642;text-align: center;padding-top: 0px;">
+        style="width: 100%; height: 100px;background-color: #608dbc;text-align: center;margin: auto">
       <el-row>
         <el-col :span="10" class="gird"></el-col>
         <el-col :span="10" class="gird"></el-col>
         <el-col :span="4" class="gird" :wrap="true">
           <el-dropdown>
-            <el-avatar :size="60"
+            <el-avatar :size="70"
                        style="margin-top: -5px;"
                        src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg">
             </el-avatar>
@@ -26,18 +27,19 @@
       </el-row>
     </el-card>
 
-    <el-dialog v-model="dialogFormVisible" title="找回密码" label-position="left" label-width="auto"
+    <!--    点击头像修改密码    -->
+    <el-dialog v-model="dialogFormVisible" title="修改密码" label-position="left" label-width="auto"
                style="max-width: 600px;">
       <el-form :model="passForm" label-width="auto">
-        <el-form-item label=" 原密码" prop="userPassword">
+        <el-form-item label="原密码 :" prop="userPassword">
           <el-input v-model="passForm.userPassword" placeholder="请输入原密码" size="large" type="password"
                     show-password />
         </el-form-item>
-        <el-form-item label="  密码" prop="userPassword">
+        <el-form-item label="密码 :" prop="userPassword">
           <el-input v-model="passForm.newPassword" placeholder="请输入新密码" size="large" type="password"
                     show-password />
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkRePassword">
+        <el-form-item label="确认密码 :" prop="checkRePassword">
           <el-input v-model="passForm.checkRePassword" placeholder="请输入确认密码" size="large" type="password"
                     show-password />
         </el-form-item>
@@ -55,12 +57,10 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, ref } from "vue";
+import {getCurrentInstance, ref} from "vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 const user = JSON.parse(localStorage.getItem("loginUser") as string) || {};
-// const user = localStorage.getItem("user");
-// console.log(user)
 
 let dialogFormVisible = ref(<boolean>false);
 let passForm = ref<{}>({
@@ -74,12 +74,6 @@ let passForm = ref<{}>({
  * 忘记密码
  */
 const updatePass = () => {
-  // const form = {
-  //   cardId: (passForm as any).value.cardId,
-  //   userPassword: (passForm as any).value.userPassword,
-  //   checkRePassword: (passForm as any).value.checkRePassword
-  // };
-
   context?.$myRequest({
     url: "/api/user/updatePassIn",
     method: "POST",

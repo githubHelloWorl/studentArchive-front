@@ -1,17 +1,17 @@
 <template>
   <div>
     <el-aside
-      width="200px"
+        width="auto"
       style="
-        background-color: #ffffff;
-        height: 810px;
-        border: 1px solid #eee;
+        height: 854px;
+        background-color: #608cbb;
       "
     >
+
       <el-menu
-        background-color="#608fbe"
-        text-color="#f0f2f4"
-        active-text-color="#8B7765"
+          background-color="#406ecd"
+          text-color="#ffffff"
+          active-text-color="#000000"
         router
         :default-active="context?.$route.path"
       >
@@ -52,12 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ref, watch,
-  getCurrentInstance,
-  onMounted
-} from "vue";
-import { Fold } from "@element-plus/icons-vue";
+import {getCurrentInstance} from "vue";
+import {Fold} from "@element-plus/icons-vue";
 
 const context = getCurrentInstance()?.appContext.config.globalProperties;
 const user = JSON.parse(localStorage.getItem("loginUser") as string);

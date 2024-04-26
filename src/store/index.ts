@@ -1,11 +1,14 @@
-import { createStore } from "vuex";
+import {createStore} from "vuex";
 import * as XLSX from "xlsx";
-import moment from "moment/moment";
 
 export default createStore({
   state: {
     forgetPassFlag: 0,
-    loginUser: Object
+    loginUser: Object,
+    fileType: [ "开除学籍","严重警告","警告","记过","留校察看" ],
+    fileCircle: [ "6","7","8","9","10","11","12" ],
+    fileLevel: [ "校级", "院级" ],
+    baseUrl: "http://localhost:8084/"
   },
   getters: {},
   mutations: {

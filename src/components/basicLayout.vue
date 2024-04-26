@@ -1,15 +1,19 @@
+<!--主体页面的宽度-->
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside width="200px">
+      <!--      左侧栏宽度-->
+      <el-aside width="auto">
         <RAside></RAside>
       </el-aside>
       <el-container>
-        <el-header height="70px">
+        <!--        头像栏高度-->
+        <el-header height="auto">
           <Header></Header>
         </el-header>
         <el-main>
-          <div style="margin-top: 10px;width: 90%;margin-left: 5%;">
+          <!--          主体内容-->
+          <div style="width: 100%;height: auto;margin: 10px auto auto auto;">
             <router-view></router-view>
           </div>
         </el-main>
