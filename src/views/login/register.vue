@@ -74,6 +74,7 @@ const context = getCurrentInstance()?.appContext.config.globalProperties;
  * 登录
  */
 const handleRegister = () => {
+  //  参数
   const form = {
     userAccount: loginForm.value.userAccount,
     userName: loginForm.value.userName,
@@ -95,7 +96,6 @@ const handleRegister = () => {
       context?.$message({ type: "error", message: res.data.message });
     }
   });
-
 };
 
 /**
@@ -115,10 +115,6 @@ const selectClass = () => {
     myC.push({ label: item, value: item });
   });
 };
-
-/**
- * 蒋婷
- */
 
 /**
  * 初始化

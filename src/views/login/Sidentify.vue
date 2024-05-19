@@ -1,6 +1,5 @@
 <!--  验证码-->
 <template>
-
   <div class="s-canvas">
     <canvas id="s-canvas" :width="props.contentWidth" :height="props.contentHeight"></canvas>
   </div>
@@ -122,8 +121,10 @@ const drawPic = () => {
   ctx.fillRect(0, 0, props.contentWidth, props.contentHeight);
   // 绘制文字
   for (let i = 0; i < props.identifyCode.length; i++) {
+    //在画布上显示数据
     drawText(ctx, props.identifyCode[i], i);
   }
+  // 绘制干扰线
   drawLine(ctx);
   drawDot(ctx);
 };

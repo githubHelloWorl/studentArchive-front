@@ -193,8 +193,6 @@ const handlerReward = (row: any) => {
     try{
       imageUrl.value = require("@/assets/image/" + image);
     }catch(e){
-      console.log("e =")
-      console.log(e)
       imageUrl.value = require("@/assets/image/error.png")
     }
   }

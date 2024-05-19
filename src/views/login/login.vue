@@ -73,8 +73,9 @@
 
 <script setup lang="ts">
 /**
- * 引入组件
+ * 引入组件 验证码
  */
+
 import SIdentify from "@/views/login/Sidentify.vue";
 import {
   ref, watch, reactive,
